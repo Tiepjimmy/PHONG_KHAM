@@ -3,10 +3,12 @@
 
 /* ===== Layout: brand + sidebar icons ===== */
 .nav-header .brand-logo .clinic-logo {
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   object-fit: contain;
-  border-radius: 8px;
+  padding: 3px;
+  border-radius: 10px;
+  background: #fff;
 }
 
 .nav-header .brand-logo .clinic-brand-title {
@@ -17,16 +19,7 @@
   white-space: nowrap;
 }
 
-.header .clinic-project-name {
-  font-size: 18px;
-  text-transform: uppercase;
-}
 
-.deznav .metismenu .menu-icon i {
-  font-size: 16px;
-  width: 20px;
-  text-align: center;
-}
 
 /* ===== Login ===== */
 .clinic-login .clinic-login-logo {
@@ -53,7 +46,7 @@
 }
 
 .clinic-table-pager {
-  padding: 0.5rem 0 0.75rem;
+  padding: 1rem 0.5rem 1rem 0.25rem;
 }
 
 .clinic-table-pager .dataTables_info {
@@ -70,13 +63,18 @@
   height: auto;
 }
 
-/* Search box + filters in the W3CRM table caption (.tbl-caption) */
-.clinic-tbl-search .form-control {
-  width: 240px;
+/* ===== List screens (W3CRM list layout, theme font sizes) ===== */
+.dataTables_wrapper > form > .tbl-caption {
+  border-bottom: 1px solid var(--border, #e6e6e6);
 }
 
 .clinic-tbl-filter {
-  padding: 0 20px 16px;
+  margin: 0 !important;
+  padding: 0.5rem 0.5rem 1.25rem;
+}
+
+.clinic-table th.sortable i {
+  font-size: 11px;
 }
 
 /* ===== Select (shared/form/select = theme select2) ===== */

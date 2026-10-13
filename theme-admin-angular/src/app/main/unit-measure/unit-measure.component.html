@@ -4,29 +4,26 @@
       <div class="card">
         <div class="card-body p-0">
           <div class="table-responsive active-projects style-1 dataTables_wrapper">
-            <div class="tbl-caption">
-              <h4 class="heading mb-0">Danh sách đơn vị tính</h4>
-              <div class="d-flex flex-wrap align-items-center gap-2">
-                <form class="clinic-tbl-search" [formGroup]="searchForm" (ngSubmit)="search()">
-                  <div class="input-group input-group-sm">
-                    <input
-                      class="form-control form-control-sm"
-                      placeholder="Tìm tên đơn vị tính..."
-                      formControlName="searchText"
-                    />
-                    <button type="submit" class="btn btn-primary btn-sm" title="Tìm kiếm">
-                      <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-                  </div>
-                </form>
-                @if (permission.allowAdd) {
-                  <button type="button" class="btn btn-primary btn-sm" (click)="openModal()">+ Thêm mới</button>
-                }
-                <button type="button" class="btn btn-secondary btn-sm" title="Tải lại trang" (click)="reloadPage()">
-                  <i class="fa-solid fa-rotate"></i>
-                </button>
+            <form [formGroup]="searchForm" (ngSubmit)="search()">
+              <div class="tbl-caption">
+                <h4 class="heading mb-0">Danh sách đơn vị tính</h4>
+                <div class="d-flex flex-wrap align-items-center gap-2">
+                  @if (permission.allowAdd) {
+                    <button type="button" class="btn btn-primary btn-sm" (click)="openModal()">+ Thêm mới</button>
+                  }
+                </div>
               </div>
-            </div>
+              <div class="row g-3 align-items-end clinic-tbl-filter">
+                <div class="col-xl-3 col-lg-4 col-md-6">
+                  <label class="form-label" for="searchText">Tên đơn vị tính</label>
+                  <input id="searchText" class="form-control" placeholder="Nhập dữ liệu" formControlName="searchText" />
+                </div>
+                <div class="col-xl-3 col-lg-4 col-md-6 d-flex gap-2">
+                  <button type="submit" class="btn btn-primary">Áp dụng</button>
+                  <button type="button" class="btn btn-danger light" (click)="reloadPage()">Đặt lại</button>
+                </div>
+              </div>
+            </form>
             <table class="table clinic-table mb-0">
               <thead>
                 <tr>

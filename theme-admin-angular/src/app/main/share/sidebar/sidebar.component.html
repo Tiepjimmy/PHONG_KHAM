@@ -1,12 +1,12 @@
 <div class="deznav" (mouseover)="hoverAdd(true)" (mouseout)="hoverAdd(false)">
   <div class="deznav-scroll">
     <ul class="metismenu" id="menu">
-      <li class="menu-title first">Danh mục chức năng</li>
+      <li class="menu-title first">CHỨC NĂNG</li>
       @for (item of listMenu; track $index) {
         @if (item.children.length === 0) {
           <li [ngClass]="{ 'mm-active': isCurrent(item) }">
             <a [routerLink]="[link(item)]" aria-expanded="false">
-              <div class="menu-icon"><i [ngClass]="item.iconName"></i></div>
+              <div class="menu-icon" [innerHtml]="iconFor(item) | safeHtmlSvg"></div>
               <span class="nav-text ms-2">{{ item.objectMenuName }}</span>
             </a>
           </li>
@@ -18,7 +18,7 @@
               [attr.aria-expanded]="openMenu === item"
               (click)="toggleMenu(item)"
             >
-              <div class="menu-icon"><i [ngClass]="item.iconName"></i></div>
+              <div class="menu-icon" [innerHtml]="iconFor(item) | safeHtmlSvg"></div>
               <span class="nav-text ms-2 me-1">{{ item.objectMenuName }}</span>
             </a>
             <ul

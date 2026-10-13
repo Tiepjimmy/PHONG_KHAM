@@ -9,9 +9,7 @@
                 <div class="tbl-caption">
                   <h4 class="heading mb-0">Danh sách tỉnh thành</h4>
                   <div class="d-flex flex-wrap align-items-center gap-2">
-                  <button type="submit" class="btn btn-primary btn-sm" title="Tìm kiếm dữ liệu"><i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm</button>
                   @if (permission.allowAdd) { <button type="button" class="btn btn-primary btn-sm" title="Thêm mới dữ liệu" (click)="openModal()">+ Thêm mới</button> }
-                  <button type="button" class="btn btn-secondary btn-sm" title="Tải lại trang" (click)="reloadPage()"><i class="fa-solid fa-rotate"></i></button>
                   </div>
                 </div>
                 <div class="row g-3 align-items-end clinic-tbl-filter">
@@ -45,6 +43,10 @@
                       bindLabel="nameVN"
                       placeholder="Chọn dữ liệu"
                     ></app-select>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-6 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary">Áp dụng</button>
+                    <button type="button" class="btn btn-danger light" (click)="reloadPage()">Đặt lại</button>
                   </div>
                 </div>
               </form>

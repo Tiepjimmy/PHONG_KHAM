@@ -28,6 +28,10 @@ export class MainComponent implements OnInit {
   public homeRouter = SOURCE.concat(DOMAIN_ROUTER);
   public toggleVal = false;
   public mouseOvered = false;
+  public menuSearch = STRING_EMPTY;
+  public menuLeaves: any[] = [];
+  public isDark = false;
+  public isFullscreen = false;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -47,8 +51,43 @@ export class MainComponent implements OnInit {
     const listMenu = user?.listMenu;
     if (listMenu?.length) {
       this.homeRouter = SOURCE.concat(DOMAIN_ROUTER, SOURCE, listMenu[0].metaLink);
+      this.menuLeaves = listMenu.flatMap((x: any) => (x.children?.length ? x.children : [x]));
     }
+    // Same storage key the W3CRM header uses for light/dark mode
+    this.isDark = localStorage.getItem('data-theme-version') === 'dark';
+    document.body.setAttribute('data-theme-version', this.isDark ? 'dark' : 'light');
     this.onResize();
+  }
+
+  public searchMenu(): void {
+    const text = this.menuSearch.trim().toLowerCase();
+    if (!text) {
+      return;
+    }
+    const menu =
+      this.menuLeaves.find((x) => x.objectMenuName?.toLowerCase() === text) ??
+      this.menuLeaves.find((x) => x.objectMenuName?.toLowerCase().includes(text));
+    if (menu) {
+      this.router.navigate([SOURCE.concat(DOMAIN_ROUTER, SOURCE, menu.metaLink)]);
+      this.menuSearch = STRING_EMPTY;
+    }
+  }
+
+  public toggleThemeMode(): void {
+    this.isDark = !this.isDark;
+    const mode = this.isDark ? 'dark' : 'light';
+    localStorage.setItem('data-theme-version', mode);
+    document.body.setAttribute('data-theme-version', mode);
+  }
+
+  public toggleFullscreen(): void {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.();
+      this.isFullscreen = true;
+    } else {
+      document.exitFullscreen?.();
+      this.isFullscreen = false;
+    }
   }
 
   public logOut(): void {

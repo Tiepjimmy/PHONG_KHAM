@@ -22,11 +22,12 @@ export class TableState {
     this.page = 1;
   }
 
+  // Same look as the W3CRM tables: blue arrow, faded when the column is not sorted
   public sortIcon(field: string): string {
     if (this.sortField !== field || !this.sortOrder) {
-      return 'fa-sort text-muted';
+      return 'fa-arrow-up text-primary opacity-25';
     }
-    return this.sortOrder === 'ascend' ? 'fa-sort-up' : 'fa-sort-down';
+    return this.sortOrder === 'ascend' ? 'fa-arrow-up text-primary' : 'fa-arrow-down text-primary';
   }
 
   public toParams(): { page: number; pageSize: number; sortField: string; sortOrder: string } {

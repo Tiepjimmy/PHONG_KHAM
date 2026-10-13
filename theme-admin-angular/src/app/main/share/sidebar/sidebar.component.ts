@@ -3,6 +3,21 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { DOMAIN_ROUTER, SOURCE } from 'src/app/helpers/constant-helper';
 import { AuthenticationService } from 'src/app/services/authentication.service';
+import { THEME_ICONS } from 'src/app/shared/theme-icons';
+
+// Clinic menu name keywords -> W3CRM sidebar icon (first match wins)
+const MENU_ICONS: [RegExp, string][] = [
+  [/trang chu|dashboard/, 'Dashboard'],
+  [/benh nhan|kham|ket qua/, 'Manage Clients'],
+  [/kho thuoc|thuoc/, 'Finance'],
+  [/danh muc/, 'Reports'],
+  [/he thong|cau hinh/, 'CMS'],
+  [/hanh chinh|vung|khu vuc|tinh|huyen|xa/, 'Projects'],
+  [/tai khoan|nguoi dung|bac si|nhan su/, 'Employees'],
+  [/bao cao|thong ke/, 'Performance'],
+  [/khach hang|ban hang|co hoi|san pham/, 'Core HR'],
+  [/to chuc|chi nhanh|phong ban/, 'Apps'],
+];
 
 @Component({
   selector: 'app-sidebar',
@@ -27,6 +42,16 @@ export class SidebarComponent implements OnInit {
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe((e) => this.syncActiveMenu((e as NavigationEnd).urlAfterRedirects));
+  }
+
+  public iconFor(menu: any): string {
+    const name = (menu?.objectMenuName ?? '')
+      .toLowerCase()
+      .normalize('NFD')
+      // after NFD the accents are separate non-ASCII marks: drop them, keep đ as d
+      .replace(/[^\x00-\x7F]/g, (c: string) => (c === 'đ' ? 'd' : ''));
+    const match = MENU_ICONS.find(([re]) => re.test(name));
+    return THEME_ICONS[match ? match[1] : 'Tasks'];
   }
 
   public link(menu: any): string {
