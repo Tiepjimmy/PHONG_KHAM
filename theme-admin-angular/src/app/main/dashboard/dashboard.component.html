@@ -1,47 +1,167 @@
+<!-- Stat cards -->
 <div class="row">
-  <div class="col-xl-12">
-    <div class="card h-auto">
+  <div class="col-xl-3 col-sm-6">
+    <div class="card clinic-stat">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted fs-13">Bệnh nhân hôm nay</span>
+          <h3 class="mb-0 mt-1">{{ patientToday }}</h3>
+          <small class="text-muted">{{ patientWeek }} lượt trong 7 ngày</small>
+        </div>
+        <span class="clinic-stat-icon bg-primary-light"><i class="fa-solid fa-user-injured"></i></span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="card clinic-stat">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted fs-13">Thuốc trong kho chính</span>
+          <h3 class="mb-0 mt-1">{{ medicineTotal }}</h3>
+          <small class="text-muted">mặt hàng</small>
+        </div>
+        <span class="clinic-stat-icon bg-success-light"><i class="fa-solid fa-pills"></i></span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="card clinic-stat">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted fs-13">Thuốc sắp hết hạn</span>
+          <h3 class="mb-0 mt-1 text-danger">{{ expiringTotal }}</h3>
+          <small class="text-muted">cần xử lý</small>
+        </div>
+        <span class="clinic-stat-icon bg-danger-light"><i class="fa-solid fa-triangle-exclamation"></i></span>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-sm-6">
+    <div class="card clinic-stat">
+      <div class="card-body d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted fs-13">Nhà cung cấp</span>
+          <h3 class="mb-0 mt-1">{{ supplierTotal }}</h3>
+          <small class="text-muted">đang hợp tác</small>
+        </div>
+        <span class="clinic-stat-icon bg-warning-light"><i class="fa-solid fa-truck-medical"></i></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Chart + account -->
+<div class="row">
+  <div class="col-xl-8">
+    <div class="card">
+      <div class="card-header border-0 pb-0">
+        <h4 class="heading mb-0">Lượt khám 7 ngày gần đây</h4>
+      </div>
+      <div class="card-body pt-2">
+        @if (chart) {
+        <apx-chart
+          [series]="chart.series"
+          [chart]="chart.chart"
+          [plotOptions]="chart.plotOptions"
+          [colors]="chart.colors"
+          [dataLabels]="chart.dataLabels"
+          [grid]="chart.grid"
+          [xaxis]="chart.xaxis"
+          [yaxis]="chart.yaxis"
+          [tooltip]="chart.tooltip"
+        ></apx-chart>
+        } @else {
+          <div class="text-center text-muted py-5">Đang tải biểu đồ...</div>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="card">
       <div class="card-header border-0 pb-0">
         <h4 class="heading mb-0">Thông tin đăng nhập</h4>
       </div>
       <div class="card-body">
-        <div class="row g-3">
-          <div class="col-xl-3 col-sm-6">
-            <div class="d-flex align-items-center clinic-info-item">
-              <span class="clinic-info-icon"><i class="fa-solid fa-user"></i></span>
-              <div class="ms-3">
-                <span class="d-block text-muted fs-13">Tên đăng nhập</span>
-                <h6 class="mb-0">{{ userName }}</h6>
-              </div>
-            </div>
+        <div class="d-flex align-items-center mb-4">
+          <img class="avatar avatar-lg rounded-circle me-3" [src]="avatar || 'assets/img/boy.png'" alt="" />
+          <div>
+            <h5 class="mb-0">{{ fullName }}</h5>
+            <span class="text-muted">{{ userName }}</span>
           </div>
-          <div class="col-xl-3 col-sm-6">
-            <div class="d-flex align-items-center clinic-info-item">
-              <span class="clinic-info-icon"><i class="fa-solid fa-id-card"></i></span>
-              <div class="ms-3">
-                <span class="d-block text-muted fs-13">Tên đầy đủ</span>
-                <h6 class="mb-0">{{ fullName }}</h6>
-              </div>
-            </div>
+        </div>
+        <ul class="list-unstyled clinic-info-list mb-0">
+          <li><span class="text-muted">Vai trò</span><span>{{ userGroupName }}</span></li>
+          <li><span class="text-muted">Ngày đăng nhập</span><span>{{ dateLogin }}</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recent lists -->
+<div class="row">
+  <div class="col-xl-7">
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive active-projects style-1">
+          <div class="tbl-caption">
+            <h4 class="heading mb-0">Bệnh nhân khám hôm nay</h4>
+            <a class="btn btn-primary light btn-sm" [routerLink]="[link('benh-nhan')]">Xem tất cả</a>
           </div>
-          <div class="col-xl-3 col-sm-6">
-            <div class="d-flex align-items-center clinic-info-item">
-              <span class="clinic-info-icon"><i class="fa-solid fa-user-shield"></i></span>
-              <div class="ms-3">
-                <span class="d-block text-muted fs-13">Vai trò</span>
-                <h6 class="mb-0">{{ userGroupName }}</h6>
-              </div>
-            </div>
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Họ và tên</th>
+                <th>Số điện thoại</th>
+                <th>Giới tính</th>
+                <th>Bác sĩ chỉ định</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of recentPatients; track $index) {
+                <tr>
+                  <td><h6 class="mb-0 fs-13">{{ item.fullName }}</h6></td>
+                  <td>{{ item.phoneNumber }}</td>
+                  <td>{{ item.sex }}</td>
+                  <td>{{ item.personName }}</td>
+                </tr>
+              } @empty {
+                <tr><td colspan="4" class="text-center text-muted py-4">Chưa có bệnh nhân hôm nay</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="card">
+      <div class="card-body p-0">
+        <div class="table-responsive active-projects style-1">
+          <div class="tbl-caption">
+            <h4 class="heading mb-0">Thuốc sắp hết hạn</h4>
+            <a class="btn btn-danger light btn-sm" [routerLink]="[link('thuoc-sap-het-han')]">Xem tất cả</a>
           </div>
-          <div class="col-xl-3 col-sm-6">
-            <div class="d-flex align-items-center clinic-info-item">
-              <span class="clinic-info-icon"><i class="fa-solid fa-calendar-day"></i></span>
-              <div class="ms-3">
-                <span class="d-block text-muted fs-13">Ngày đăng nhập</span>
-                <h6 class="mb-0">{{ dateLogin }}</h6>
-              </div>
-            </div>
-          </div>
+          <table class="table mb-0">
+            <thead>
+              <tr>
+                <th>Tên thuốc</th>
+                <th>Số lượng</th>
+                <th>Hạn dùng</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of expiringMedicines; track $index) {
+                <tr>
+                  <td><h6 class="mb-0 fs-13">{{ item.name }}</h6></td>
+                  <td>{{ item.quantity }} {{ item.unitMeasureName }}</td>
+                  <td><span class="badge badge-danger light border-0">{{ item.expiry | date : dateFormat }}</span></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="3" class="text-center text-muted py-4">Không có thuốc sắp hết hạn</td></tr>
+              }
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

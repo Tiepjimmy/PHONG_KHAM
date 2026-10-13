@@ -1,59 +1,48 @@
 @if (permission?.allowAccess) {
   <div class="row">
     <div class="col-xl-12">
-      <!-- Filter -->
-      <div class="card h-auto mb-3">
-        <div class="card-body py-3">
-          <form [formGroup]="searchForm" (ngSubmit)="search()">
-            <div class="row g-3 align-items-end">
-              <div class="col-xl-3 col-md-6">
-                <label class="form-label" for="expiry">Xem thuốc hết hạn trong vòng</label>
-                <div class="input-group">
-                  <input
-                    id="expiry"
-                    class="form-control"
-                    appNumberInput
-                    formControlName="expiry"
-                    [min]="0"
-                    autocomplete="off"
-                  />
-                  <span class="input-group-text">tháng</span>
-                </div>
-              </div>
-              <div class="col-xl-3 col-md-6">
-                <label class="form-label" for="isMain">Kho thuốc</label>
-                <app-select
-                  formControlName="isMain"
-                  [items]="listWarehouse"
-                  bindValue="id"
-                  bindLabel="name"
-                  placeholder="Chọn dữ liệu"
-                  [allowClear]="false"
-                  [searchable]="false"
-                ></app-select>
-              </div>
-              <div class="col-xl-6 col-md-12 text-md-end">
-                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
-                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
-                </button>
-                @if (permission.allowPrint) {
-                  <button type="button" class="btn btn-warning btn-sm me-2" title="Print" (click)="print()">
-                    <i class="fa-solid fa-print me-1"></i>In
-                  </button>
-                }
-                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
-                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
 
-      <!-- Table -->
-      <div class="card h-auto">
+      <div class="card">
         <div class="card-body p-0">
-          <div class="table-responsive active-projects style-1">
+          <div class="table-responsive active-projects style-1 dataTables_wrapper">
+              <form [formGroup]="searchForm" (ngSubmit)="search()">
+                <div class="tbl-caption">
+                  <h4 class="heading mb-0">Thuốc sắp hết hạn</h4>
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary btn-sm" title="Tìm kiếm dữ liệu"><i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm</button>
+                  @if (permission.allowPrint) { <button type="button" class="btn btn-primary light btn-sm" title="Print" (click)="print()"><i class="fa-solid fa-print me-1"></i>In</button> }
+                  <button type="button" class="btn btn-secondary btn-sm" title="Tải lại trang" (click)="reloadPage()"><i class="fa-solid fa-rotate"></i></button>
+                  </div>
+                </div>
+                <div class="row g-3 align-items-end clinic-tbl-filter">
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                    <label class="form-label" for="expiry">Xem thuốc hết hạn trong vòng</label>
+                    <div class="input-group">
+                      <input
+                        id="expiry"
+                        class="form-control"
+                        appNumberInput
+                        formControlName="expiry"
+                        [min]="0"
+                        autocomplete="off"
+                      />
+                      <span class="input-group-text">tháng</span>
+                    </div>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                    <label class="form-label" for="isMain">Kho thuốc</label>
+                    <app-select
+                      formControlName="isMain"
+                      [items]="listWarehouse"
+                      bindValue="id"
+                      bindLabel="name"
+                      placeholder="Chọn dữ liệu"
+                      [allowClear]="false"
+                      [searchable]="false"
+                    ></app-select>
+                  </div>
+                </div>
+              </form>
             <table class="table clinic-table mb-0">
               <thead>
                 <tr>

@@ -1,42 +1,23 @@
 @if (permission?.allowAccess) {
   <div class="row">
     <div class="col-xl-12">
-      <!-- Filter -->
-      <div class="card h-auto mb-3">
-        <div class="card-body py-3">
-          <form [formGroup]="searchForm" (ngSubmit)="search()">
-            <div class="row g-3 align-items-end">
-              <div class="col-xl-4 col-md-6">
-                <label class="form-label" for="searchText">Tên nhà cung cấp</label>
-                <input
-                  id="searchText"
-                  class="form-control"
-                  placeholder="Nhập dữ liệu"
-                  formControlName="searchText"
-                />
-              </div>
-              <div class="col-xl-8 col-md-6 text-md-end">
-                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
-                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
-                </button>
-                @if (permission.allowAdd) {
-                  <button type="button" class="btn btn-success btn-sm me-2" title="Thêm mới dữ liệu" (click)="openModal()">
-                    <i class="fa-solid fa-plus me-1"></i>Thêm mới
-                  </button>
-                }
-                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
-                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
 
-      <!-- Table -->
-      <div class="card h-auto">
+      <div class="card">
         <div class="card-body p-0">
-          <div class="table-responsive active-projects style-1">
+          <div class="table-responsive active-projects style-1 dataTables_wrapper">
+              <form [formGroup]="searchForm" (ngSubmit)="search()">
+                <div class="tbl-caption">
+                  <h4 class="heading mb-0">Danh sách nhà cung cấp</h4>
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                  <div class="input-group input-group-sm clinic-tbl-search">
+                    <input class="form-control form-control-sm" placeholder="Tên nhà cung cấp..." formControlName="searchText" />
+                    <button type="submit" class="btn btn-primary btn-sm" title="Tìm kiếm"><i class="fa-solid fa-magnifying-glass"></i></button>
+                  </div>
+                  @if (permission.allowAdd) { <button type="button" class="btn btn-primary btn-sm" title="Thêm mới dữ liệu" (click)="openModal()">+ Thêm mới</button> }
+                  <button type="button" class="btn btn-secondary btn-sm" title="Tải lại trang" (click)="reloadPage()"><i class="fa-solid fa-rotate"></i></button>
+                  </div>
+                </div>
+              </form>
             <table class="table clinic-table mb-0">
               <thead>
                 <tr>

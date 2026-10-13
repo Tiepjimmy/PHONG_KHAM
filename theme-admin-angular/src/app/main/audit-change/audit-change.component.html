@@ -1,59 +1,52 @@
 @if (permission?.allowAccess) {
   <div class="row">
     <div class="col-xl-12">
-      <!-- Filter -->
-      <div class="card h-auto mb-3">
-        <div class="card-body py-3">
-          <form [formGroup]="searchForm" (ngSubmit)="search()">
-            <div class="row g-3 align-items-end">
-              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
-                <label class="form-label" for="idChange">Id thay đổi</label>
-                <input
-                  id="idChange"
-                  class="form-control"
-                  placeholder="Nhập dữ liệu"
-                  formControlName="idChange"
-                />
-              </div>
-              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
-                <label class="form-label" for="action">Chức năng</label>
-                <app-select
-          [loading]="isLoadingAction"
-                  formControlName="action"
-                  [items]="listAction"
-                  bindValue="action"
-                  bindLabel="action"
-                  placeholder="Chọn dữ liệu"
-                ></app-select>
-              </div>
-              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
-                <label class="form-label" for="entityName">Thuộc tính</label>
-                <app-select
-          [loading]="isLoadingEntityName"
-                  formControlName="entityName"
-                  [items]="listEntityName"
-                  bindValue="entityName"
-                  bindLabel="entityName"
-                  placeholder="Chọn dữ liệu"
-                ></app-select>
-              </div>
-              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12 text-md-end">
-                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
-                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
-                </button>
-                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
-                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
 
-      <!-- Table -->
-      <div class="card h-auto">
+      <div class="card">
         <div class="card-body p-0">
-          <div class="table-responsive active-projects style-1">
+          <div class="table-responsive active-projects style-1 dataTables_wrapper">
+              <form [formGroup]="searchForm" (ngSubmit)="search()">
+                <div class="tbl-caption">
+                  <h4 class="heading mb-0">Lịch sử thay đổi dữ liệu</h4>
+                  <div class="d-flex flex-wrap align-items-center gap-2">
+                  <button type="submit" class="btn btn-primary btn-sm" title="Tìm kiếm dữ liệu"><i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm</button>
+                  <button type="button" class="btn btn-secondary btn-sm" title="Tải lại trang" (click)="reloadPage()"><i class="fa-solid fa-rotate"></i></button>
+                  </div>
+                </div>
+                <div class="row g-3 align-items-end clinic-tbl-filter">
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                    <label class="form-label" for="idChange">Id thay đổi</label>
+                    <input
+                      id="idChange"
+                      class="form-control"
+                      placeholder="Nhập dữ liệu"
+                      formControlName="idChange"
+                    />
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                    <label class="form-label" for="action">Chức năng</label>
+                    <app-select
+                  [loading]="isLoadingAction"
+                      formControlName="action"
+                      [items]="listAction"
+                      bindValue="action"
+                      bindLabel="action"
+                      placeholder="Chọn dữ liệu"
+                    ></app-select>
+                  </div>
+                  <div class="col-xl-3 col-lg-4 col-md-6">
+                    <label class="form-label" for="entityName">Thuộc tính</label>
+                    <app-select
+                  [loading]="isLoadingEntityName"
+                      formControlName="entityName"
+                      [items]="listEntityName"
+                      bindValue="entityName"
+                      bindLabel="entityName"
+                      placeholder="Chọn dữ liệu"
+                    ></app-select>
+                  </div>
+                </div>
+              </form>
             <table class="table clinic-table mb-0">
               <thead>
                 <tr>

@@ -1,49 +1,52 @@
-<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-3 py-3 clinic-table-pager">
-  <div class="d-flex align-items-center gap-2">
-    <span class="text-muted">Hiển thị {{ from }}-{{ to }} của {{ total }} bản ghi</span>
+<div class="d-flex flex-wrap align-items-center justify-content-between clinic-table-pager">
+  <div class="dataTables_info" role="status" aria-live="polite">
+    Hiển thị {{ from }} đến {{ to }} của {{ total }} bản ghi
     <select
-      class="form-select form-select-sm w-auto"
+      class="form-select form-select-sm d-inline-block w-auto ms-2 clinic-page-size"
       [ngModel]="pageSize"
       (ngModelChange)="changeSize($event)"
+      aria-label="Số dòng mỗi trang"
     >
       @for (size of pageSizeOptions; track size) {
         <option [ngValue]="size">{{ size }} / trang</option>
       }
     </select>
   </div>
-  <nav aria-label="Phân trang">
-    <ul class="pagination pagination-sm mb-0">
-      <li class="page-item" [class.disabled]="page <= 1">
-        <a class="page-link" href="javascript:void(0)" (click)="goTo(page - 1)">
-          <i class="fa-solid fa-angle-left"></i>
-        </a>
-      </li>
-      @if (pages[0] > 1) {
+  <div class="dataTables_paginate paging_simple_numbers pe-3">
+    <nav aria-label="Phân trang" class="list-pagination">
+      <ul class="pagination mb-2 mb-sm-0">
         <li class="page-item">
-          <a class="page-link" href="javascript:void(0)" (click)="goTo(1)">1</a>
+          <a class="page-link" href="javascript:void(0)" (click)="goTo(page - 1)">
+            <i class="fa-solid fa-angle-left"></i>
+          </a>
         </li>
-        @if (pages[0] > 2) {
-          <li class="page-item disabled"><span class="page-link">…</span></li>
+        @if (pages[0] > 1) {
+          <li class="page-item">
+            <a class="page-link" href="javascript:void(0)" (click)="goTo(1)">1</a>
+          </li>
+          @if (pages[0] > 2) {
+            <li class="page-item"><span class="page-link">…</span></li>
+          }
         }
-      }
-      @for (p of pages; track p) {
-        <li class="page-item" [class.active]="p === page">
-          <a class="page-link" href="javascript:void(0)" (click)="goTo(p)">{{ p }}</a>
-        </li>
-      }
-      @if (pages[pages.length - 1] < totalPage) {
-        @if (pages[pages.length - 1] < totalPage - 1) {
-          <li class="page-item disabled"><span class="page-link">…</span></li>
+        @for (p of pages; track p) {
+          <li class="page-item">
+            <a class="page-link" [class.active]="p === page" href="javascript:void(0)" (click)="goTo(p)">{{ p }}</a>
+          </li>
+        }
+        @if (pages[pages.length - 1] < totalPage) {
+          @if (pages[pages.length - 1] < totalPage - 1) {
+            <li class="page-item"><span class="page-link">…</span></li>
+          }
+          <li class="page-item">
+            <a class="page-link" href="javascript:void(0)" (click)="goTo(totalPage)">{{ totalPage }}</a>
+          </li>
         }
         <li class="page-item">
-          <a class="page-link" href="javascript:void(0)" (click)="goTo(totalPage)">{{ totalPage }}</a>
+          <a class="page-link" href="javascript:void(0)" (click)="goTo(page + 1)">
+            <i class="fa-solid fa-angle-right"></i>
+          </a>
         </li>
-      }
-      <li class="page-item" [class.disabled]="page >= totalPage">
-        <a class="page-link" href="javascript:void(0)" (click)="goTo(page + 1)">
-          <i class="fa-solid fa-angle-right"></i>
-        </a>
-      </li>
-    </ul>
-  </nav>
+      </ul>
+    </nav>
+  </div>
 </div>
