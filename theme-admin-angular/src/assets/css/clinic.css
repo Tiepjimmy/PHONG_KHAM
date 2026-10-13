@@ -1,6 +1,15 @@
 /* Clinic additions on top of the W3CRM theme (style.css / custom.css). Keep this file small:
    prefer the theme's own classes in templates. */
 
+/* ===== Base size =====
+   style.css drops the root font-size to 14px below 1600px wide (100rem), which shrinks the whole UI
+   (sidebar, menu, tables) on laptops / zoomed browsers. Keep the theme's 16px base like the W3CRM demo. */
+@media only screen and (max-width: 100rem) {
+  :root {
+    font-size: 16px;
+  }
+}
+
 /* ===== Layout: brand + sidebar icons ===== */
 .nav-header .brand-logo .clinic-logo {
   width: 42px;
