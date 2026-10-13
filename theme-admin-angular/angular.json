@@ -39,7 +39,8 @@
               "@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css",
               "src/assets/css/custom.css",
-              "node_modules/ngx-toastr/toastr.css"
+              "node_modules/ngx-toastr/toastr.css",
+              "src/assets/css/clinic.css"
             ],
             "scripts": []
           },
