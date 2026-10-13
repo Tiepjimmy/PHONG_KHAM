@@ -1,0 +1,100 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="code">
+          Mã quận huyện(Số) <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="code"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('code')"
+          formControlName="code"
+          placeholder="Nhập dữ liệu"
+          onkeypress="return isNumber(event)"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="codeName">Mã quận huyện(Tên)</label>
+        <input
+          id="codeName"
+          type="text"
+          class="form-control"
+          formControlName="codeName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="nameVN">Tên quận huyện(VN)</label>
+        <input
+          id="nameVN"
+          type="text"
+          class="form-control"
+          formControlName="nameVN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="nameEN">Tên quận huyện(EN)</label>
+        <input
+          id="nameEN"
+          type="text"
+          class="form-control"
+          formControlName="nameEN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fullNameVN">Tên quận huyện đầy đủ(VN)</label>
+        <input
+          id="fullNameVN"
+          type="text"
+          class="form-control"
+          formControlName="fullNameVN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fullNameEN">Tên quận huyện đầy đủ(EN)</label>
+        <input
+          id="fullNameEN"
+          type="text"
+          class="form-control"
+          formControlName="fullNameEN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="regionId">Vùng</label>
+        <app-select
+          formControlName="regionId"
+          [items]="listRegion"
+          bindValue="id"
+          bindLabel="nameVN"
+          placeholder="Chọn dữ liệu"
+        ></app-select>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

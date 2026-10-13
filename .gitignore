@@ -1,0 +1,30 @@
+# Old frontend (ng-zorro), kept locally for reference only — not pushed.
+# The repo contains only ClinicManagement (API) and theme-admin-angular (new frontend).
+clinic-management-client/
+
+# Secrets: real connection string / passwords live here (commit .env.example instead)
+.env
+.env.*
+!.env.example
+
+# Deploy bundles
+*.tar.gz
+*.zip
+
+# Frontend build output and dependencies
+node_modules/
+dist/
+.angular/
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+
+# Backend runtime data (uploads, logs)
+ClinicManagement/ClinicManagement.WebApi/wwwroot/Logs/
+
+# OS / editor
+.DS_Store
+Thumbs.db

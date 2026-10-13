@@ -1,0 +1,19 @@
+<div class="position-relative clinic-select" [class.is-invalid]="invalid">
+  <select2
+    class="select2"
+    [data]="data"
+    [value]="value"
+    [multiple]="multiple"
+    [placeholder]="loading ? 'Đang tải...' : placeholder"
+    [resettable]="allowClear"
+    [minCountForSearch]="searchable ? 0 : 999999"
+    [disabled]="disabled"
+    [noResultMessage]="'Không có dữ liệu'"
+    [overlay]="true"
+    (update)="onUpdate($event)"
+    (blur)="onBlur()"
+  ></select2>
+  @if (loading) {
+    <span class="spinner-border spinner-border-sm text-primary clinic-select-loading" role="status"></span>
+  }
+</div>

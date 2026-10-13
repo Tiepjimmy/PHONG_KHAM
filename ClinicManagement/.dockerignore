@@ -1,0 +1,7 @@
+**/bin
+**/obj
+**/.vs
+**/*.user
+packages
+ClinicManagement.Generator
+ClinicManagement.WebApi/wwwroot/Logs

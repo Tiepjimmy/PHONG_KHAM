@@ -1,0 +1,172 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fieldString">
+          String <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="fieldString"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('fieldString')"
+          formControlName="fieldString"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fieldDateTime">DateTime</label>
+        <app-date-picker inputId="fieldDateTime" formControlName="fieldDateTime"></app-date-picker></div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fieldDropdownId">Dropdown</label>
+        <app-select
+          [loading]="isLoadingFieldDropdownId"
+          formControlName="fieldDropdownId"
+          [items]="listFieldDropdownId"
+          bindValue="id"
+          bindLabel="fieldString"
+          [placeholder]="isLoadingFieldDropdownId ? 'Đang tải...' : 'Chọn dữ liệu'"
+        ></app-select>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fieldNumber">Number</label>
+        <input
+          id="fieldNumber"
+          type="text"
+          class="form-control"
+          formControlName="fieldNumber"
+          placeholder="Nhập dữ liệu"
+          onkeypress="return isNumber(event)"
+          autocomplete="off"
+        />
+        <!-- money -->
+        <!-- <div class="input-group">
+          <input id="priceTotal" class="form-control" appNumberInput formControlName="priceTotal" [min]="0" />
+          <span class="input-group-text">vnđ</span>
+        </div> -->
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fieldTextArea">TextArea</label>
+        <textarea
+          id="fieldTextArea"
+          class="form-control"
+          formControlName="fieldTextArea"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="file">Image</label>
+        <div>
+          <img
+            [src]="imageSrc"
+            class="upload-img-custom"
+            alt="Image"
+            (click)="onClickOpenSelectFile()"
+          />
+        </div>
+        <input
+          id="file"
+          type="file"
+          class="d-none"
+          (change)="onFileChange($event)"
+          #myFile
+          accept=".png, .jpg, .jpeg"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label d-block">CheckBox</label>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="fieldCheckBox"
+            formControlName="fieldCheckBox"
+          />
+          <label class="form-check-label" for="fieldCheckBox">CheckBox</label>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label d-block">Switch</label>
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="fieldSwitch"
+            formControlName="fieldSwitch"
+          />
+          <label class="form-check-label" for="fieldSwitch">
+            {{ formGroup.controls['fieldSwitch'].value ? 'Có' : 'Không' }}
+          </label>
+        </div>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="files">List File</label>
+        <input
+          id="files"
+          name="files"
+          type="file"
+          class="form-control"
+          (change)="onFilesChange($event)"
+          multiple
+          #myFiles
+          [accept]="listFileType"
+        />
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" *ngFor="let data of listDocumentFile">
+        <img class="img-icon-file" *ngIf="data.fileType === '.7z'" src="assets/img/icon/7z.png" alt="7z" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.bmp'" src="assets/img/icon/bmp.png" alt="bmp" />
+        <img
+          class="img-icon-file"
+          *ngIf="data.fileType === '.xls' || data.fileType === '.xlsx'"
+          src="assets/img/icon/excel.png"
+          alt="excel"
+        />
+        <img class="img-icon-file" *ngIf="data.fileType === '.gif'" src="assets/img/icon/gif.png" alt="gif" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.jpeg'" src="assets/img/icon/jpeg.png" alt="jpeg" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.jpg'" src="assets/img/icon/jpg.png" alt="jpg" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.pdf'" src="assets/img/icon/pdf.png" alt="pdf" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.png'" src="assets/img/icon/png.png" alt="png" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.ppt'" src="assets/img/icon/ppt.png" alt="ppt" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.pptx'" src="assets/img/icon/pptx.png" alt="pptx" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.rar'" src="assets/img/icon/rar.png" alt="rar" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.enc'" src="assets/img/icon/enc.png" alt="enc" />
+        <img class="img-icon-file" *ngIf="data.fileType === '.tar'" src="assets/img/icon/tar.png" alt="tar" />
+        <img
+          class="img-icon-file"
+          *ngIf="data.fileType === '.doc' || data.fileType === '.docx'"
+          src="assets/img/icon/word.png"
+          alt="word"
+        />
+        <img class="img-icon-file" *ngIf="data.fileType === '.zip'" src="assets/img/icon/zip.png" alt="zip" />
+        <span class="file-name" (click)="openFileBrower(data.fileNameUrl)">
+          {{ data.fileName }}{{ data.fileType }}
+        </span>
+        <button
+          type="button"
+          class="btn btn-danger light btn-xs sharp ms-2"
+          title="Xóa tập tin"
+          (click)="deleteFile(data.id)"
+        >
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

@@ -1,0 +1,114 @@
+<form [formGroup]="profileForm" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3 text-center">
+        <label class="form-label d-block" for="file">Ảnh đại diện</label>
+        <img
+          [src]="imageSrc"
+          class="upload-img-custom"
+          alt="Ảnh đại diện"
+          (click)="onClickOpenSelectFile()"
+        />
+        <input
+          id="file"
+          type="file"
+          class="d-none"
+          (change)="onFileChange($event)"
+          #myFile
+          accept=".png, .jpg, .jpeg"
+        />
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="userName">Tên đăng nhập</label>
+        <input
+          id="userName"
+          type="text"
+          class="form-control"
+          formControlName="userName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="fullName">
+          Họ và tên <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('fullName')"
+          formControlName="fullName"
+          placeholder="Nhập dữ liệu"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="phoneNumber">
+          Số điện thoại <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="phoneNumber"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('phoneNumber')"
+          formControlName="phoneNumber"
+          onkeypress="return isNumber(event)"
+          maxlength="10"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="dateOfBirth">
+          Ngày sinh <span class="text-danger">(*)</span>
+        </label>
+        <app-date-picker inputId="dateOfBirth" formControlName="dateOfBirth" [invalid]="isInvalid('dateOfBirth')"></app-date-picker>
+        @if (isInvalid('dateOfBirth')) {<div class="invalid-feedback d-block">Vui lòng nhập dữ liệu</div>}
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="sex">
+          Giới tính <span class="text-danger">(*)</span>
+        </label>
+        <app-select
+          formControlName="sex"
+          [items]="listSex"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          [allowClear]="false"
+          [searchable]="false"
+          [invalid]="isInvalid('sex')"
+        ></app-select>
+        @if (isInvalid('sex')) {
+          <div class="invalid-feedback d-block">Vui lòng chọn dữ liệu</div>
+        }
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="address">Địa chỉ</label>
+        <textarea
+          id="address"
+          class="form-control"
+          formControlName="address"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu Thông Tin
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

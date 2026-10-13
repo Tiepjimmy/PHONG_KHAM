@@ -1,0 +1,161 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="name">
+          Tên chức năng <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('name')"
+          formControlName="name"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="shortName">Tên tiêu đề</label>
+        <input
+          id="shortName"
+          type="text"
+          class="form-control"
+          formControlName="shortName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-4 col-lg-4 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="parentId">Chức năng cha</label>
+        <app-select
+          [loading]="isLoadingParentId"
+          formControlName="parentId"
+          [items]="listParent"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          (selectionChange)="ngModelChangeParentId($event)"
+        ></app-select>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="metaLink">
+          Đường dẫn <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="metaLink"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('metaLink')"
+          formControlName="metaLink"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="iconName">
+          Icon
+          <a
+            href="https://www.w3schools.com/icons/icons_reference.asp"
+            target="_blank"
+            class="ps-1"
+          >
+            (Link Icon)
+          </a>
+        </label>
+        <input
+          id="iconName"
+          type="text"
+          class="form-control"
+          formControlName="iconName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="levelShow">
+          Cấp hiển thị <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="levelShow"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('levelShow')"
+          formControlName="levelShow"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          onkeypress="return isNumber(event)"
+          [readonly]="true"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="orderShow">
+          Thứ tự hiển thị <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="orderShow"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('orderShow')"
+          formControlName="orderShow"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          onkeypress="return isNumber(event)"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="dataTarget">DataTarget</label>
+        <div class="input-group">
+          <span class="input-group-text">#</span>
+          <input
+            id="dataTarget"
+            type="text"
+            class="form-control"
+            formControlName="dataTarget"
+            placeholder="Nhập dữ liệu"
+            autocomplete="off"
+            (ngModelChange)="onChangeDataTarget($event)"
+          />
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="ariaControls">AriaControls</label>
+        <input
+          id="ariaControls"
+          type="text"
+          class="form-control"
+          formControlName="ariaControls"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          [readOnly]="true"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label d-block" for="isActive">Hiển thị</label>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
+          <label class="form-check-label" for="isActive">
+            {{ formGroup.get('isActive')?.value ? 'Có' : 'Không' }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

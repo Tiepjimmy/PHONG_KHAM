@@ -1,0 +1,120 @@
+@if (permission?.allowAccess) {
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Filter -->
+      <div class="card h-auto mb-3">
+        <div class="card-body py-3">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <div class="row g-3 align-items-end">
+              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="idChange">Id thay đổi</label>
+                <input
+                  id="idChange"
+                  class="form-control"
+                  placeholder="Nhập dữ liệu"
+                  formControlName="idChange"
+                />
+              </div>
+              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="action">Chức năng</label>
+                <app-select
+          [loading]="isLoadingAction"
+                  formControlName="action"
+                  [items]="listAction"
+                  bindValue="action"
+                  bindLabel="action"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="entityName">Thuộc tính</label>
+                <app-select
+          [loading]="isLoadingEntityName"
+                  formControlName="entityName"
+                  [items]="listEntityName"
+                  bindValue="entityName"
+                  bindLabel="entityName"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12 text-md-end">
+                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
+                </button>
+                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
+                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card h-auto">
+        <div class="card-body p-0">
+          <div class="table-responsive active-projects style-1">
+            <table class="table clinic-table mb-0">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 60px">STT</th>
+                  <th class="sortable" style="width: 120px" (click)="sort('idChange')">
+                    Id thay đổi
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('idChange')"></i>
+                  </th>
+                  <th class="sortable" style="width: 90px" (click)="sort('action')">
+                    Chức năng
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('action')"></i>
+                  </th>
+                  <th class="sortable" style="width: 130px" (click)="sort('entityName')">
+                    Thuộc tính thay đổi
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('entityName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 240px" (click)="sort('changes')">
+                    Giá trị thay đổi
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('changes')"></i>
+                  </th>
+                  <th class="sortable" style="width: 110px" (click)="sort('createdDate')">
+                    Ngày thay đổi
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('createdDate')"></i>
+                  </th>
+                  <th class="sortable" style="width: 130px" (click)="sort('userName')">
+                    Tài khoản thay đổi
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('userName')"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (data of listData; track $index) {
+                  <tr>
+                    <td class="text-center">{{ data.stt }}</td>
+                    <td>{{ data.idChange }}</td>
+                    <td>{{ data.action }}</td>
+                    <td>{{ data.entityName }}</td>
+                    <td><span [innerHTML]="data.changes"></span></td>
+                    <td>{{ data.createdDate | date : dateFormat }}</td>
+                    <td>{{ data.userName }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">Không có dữ liệu</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-table-pager
+            [page]="table.page"
+            [pageSize]="table.pageSize"
+            [total]="table.total"
+            (pageChange)="changePage($event)"
+            (pageSizeChange)="changePageSize($event)"
+          ></app-table-pager>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-not-found isFullPage="false"></app-not-found>
+}
+<app-loading *ngIf="isLoading"></app-loading>

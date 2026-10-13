@@ -1,0 +1,94 @@
+<div class="authincation h-100 clinic-login">
+  <div class="container-fluid h-100">
+    <div class="row h-100">
+      <div class="col-lg-6 col-md-12 col-sm-12 mx-auto align-self-center">
+        <div class="login-form">
+          <div class="text-center">
+            <img class="clinic-login-logo mb-3" [src]="logoName" alt="" />
+            <h3 class="title">Đăng nhập</h3>
+            <p>Đăng nhập để sử dụng hệ thống {{ projectName }}</p>
+          </div>
+          <form [formGroup]="signinForm" (ngSubmit)="submitForm()" novalidate>
+            <div class="mb-4">
+              <label class="mb-1 text-dark" for="userName">Tên đăng nhập</label>
+              <input
+                id="userName"
+                type="text"
+                class="form-control"
+                [class.is-invalid]="isInvalid('userName')"
+                formControlName="userName"
+                placeholder="Tên đăng nhập"
+                autocomplete="on"
+              />
+              <div class="invalid-feedback">Vui lòng nhập tên đăng nhập</div>
+            </div>
+            <div class="mb-4">
+              <label class="mb-1 text-dark" for="passWord">Mật khẩu</label>
+              <div class="position-relative">
+                <input
+                  id="passWord"
+                  class="form-control"
+                  [class.is-invalid]="isInvalid('passWord')"
+                  [type]="showPassword ? 'text' : 'password'"
+                  formControlName="passWord"
+                  placeholder="Mật khẩu"
+                  autocomplete="on"
+                />
+                <span
+                  class="show-pass eye"
+                  [ngClass]="{ active: showPassword }"
+                  (click)="showPassword = !showPassword"
+                >
+                  <i class="fa fa-eye-slash"></i>
+                  <i class="fa fa-eye"></i>
+                </span>
+                <div class="invalid-feedback">Vui lòng nhập mật khẩu</div>
+              </div>
+            </div>
+            <div class="row mb-4">
+              <div class="col-7">
+                <label class="mb-1 text-dark" for="captch">Mã xác nhận</label>
+                <input
+                  id="captch"
+                  type="text"
+                  class="form-control"
+                  [class.is-invalid]="isInvalid('captch')"
+                  formControlName="captch"
+                  placeholder="Mã xác nhận"
+                  maxlength="4"
+                />
+                <div class="invalid-feedback">Vui lòng nhập mã xác nhận</div>
+              </div>
+              <div class="col-5">
+                <label class="mb-1 text-dark" for="code">&nbsp;</label>
+                <input
+                  id="code"
+                  type="text"
+                  class="form-control captcha"
+                  formControlName="code"
+                />
+              </div>
+            </div>
+            <div class="text-center mb-4">
+              <button type="submit" class="btn btn-primary btn-block w-100">
+                Đăng nhập
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-xl-6 col-sm-6 d-none d-sm-block">
+        <div class="pages-left h-100">
+          <div class="login-content">
+            <h3 class="mb-2">HỆ THỐNG</h3>
+            <p>{{ projectName }}</p>
+          </div>
+          <div class="login-media text-center">
+            <img src="assets/images/login.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-loading *ngIf="isLoading"></app-loading>

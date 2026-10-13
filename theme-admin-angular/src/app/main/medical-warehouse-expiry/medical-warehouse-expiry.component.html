@@ -1,0 +1,120 @@
+@if (permission?.allowAccess) {
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Filter -->
+      <div class="card h-auto mb-3">
+        <div class="card-body py-3">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <div class="row g-3 align-items-end">
+              <div class="col-xl-3 col-md-6">
+                <label class="form-label" for="expiry">Xem thuốc hết hạn trong vòng</label>
+                <div class="input-group">
+                  <input
+                    id="expiry"
+                    class="form-control"
+                    appNumberInput
+                    formControlName="expiry"
+                    [min]="0"
+                    autocomplete="off"
+                  />
+                  <span class="input-group-text">tháng</span>
+                </div>
+              </div>
+              <div class="col-xl-3 col-md-6">
+                <label class="form-label" for="isMain">Kho thuốc</label>
+                <app-select
+                  formControlName="isMain"
+                  [items]="listWarehouse"
+                  bindValue="id"
+                  bindLabel="name"
+                  placeholder="Chọn dữ liệu"
+                  [allowClear]="false"
+                  [searchable]="false"
+                ></app-select>
+              </div>
+              <div class="col-xl-6 col-md-12 text-md-end">
+                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
+                </button>
+                @if (permission.allowPrint) {
+                  <button type="button" class="btn btn-warning btn-sm me-2" title="Print" (click)="print()">
+                    <i class="fa-solid fa-print me-1"></i>In
+                  </button>
+                }
+                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
+                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card h-auto">
+        <div class="card-body p-0">
+          <div class="table-responsive active-projects style-1">
+            <table class="table clinic-table mb-0">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 45px">STT</th>
+                  <th class="sortable" style="width: 200px" (click)="sort('name')">
+                    Tên thuốc
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('name')"></i>
+                  </th>
+                  <th class="sortable" style="width: 100px" (click)="sort('unitMeasureName')">
+                    Đơn vị
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('unitMeasureName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 100px" (click)="sort('quantity')">
+                    Tồn kho
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('quantity')"></i>
+                  </th>
+                  <th class="sortable" style="width: 120px" (click)="sort('price')">
+                    Giá bán
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('price')"></i>
+                  </th>
+                  <th class="sortable" style="width: 140px" (click)="sort('expiry')">
+                    Hạn sử dụng
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('expiry')"></i>
+                  </th>
+                  <th class="sortable" style="width: 200px" (click)="sort('note')">
+                    Ghi chú
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('note')"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (data of listData; track $index) {
+                  <tr>
+                    <td class="text-center">{{ data.stt }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.unitMeasureName }}</td>
+                    <td>{{ data.quantity }}</td>
+                    <td>{{ data.price | number : "1.0" : "en-US" }} vnđ</td>
+                    <td>{{ data.expiry | date : dateFormat }}</td>
+                    <td>{{ data.note }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">Không có dữ liệu</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-table-pager
+            [page]="table.page"
+            [pageSize]="table.pageSize"
+            [total]="table.total"
+            (pageChange)="changePage($event)"
+            (pageSizeChange)="changePageSize($event)"
+          ></app-table-pager>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-not-found isFullPage="false"></app-not-found>
+}
+<app-loading *ngIf="isLoading"></app-loading>

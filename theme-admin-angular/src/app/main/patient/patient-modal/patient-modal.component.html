@@ -1,0 +1,322 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-2 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="couponCode">Mã phiếu</label>
+        <input
+          id="couponCode"
+          type="text"
+          class="form-control"
+          formControlName="couponCode"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          [readonly]="true"
+        />
+      </div>
+      <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="fullName">
+          Họ và tên <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('fullName')"
+          formControlName="fullName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="dateOfBirth">
+          Ngày sinh <span class="text-danger">(*)</span>
+        </label>
+        <app-date-picker inputId="dateOfBirth" formControlName="dateOfBirth" [invalid]="isInvalid('dateOfBirth')"></app-date-picker>
+        @if (isInvalid('dateOfBirth')) {<div class="invalid-feedback d-block">Vui lòng nhập dữ liệu</div>}
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="phoneNumber">
+          Số điện thoại <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="phoneNumber"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('phoneNumber')"
+          formControlName="phoneNumber"
+          onkeypress="return isNumber(event)"
+          maxlength="10"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="sex">Giới tính</label>
+        <app-select
+          id="sex"
+          formControlName="sex"
+          [items]="listSex"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          [allowClear]="false"
+          [searchable]="false"
+        ></app-select>
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="visit">Lần khám</label>
+        <input
+          id="visit"
+          type="text"
+          class="form-control"
+          formControlName="visit"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          [readonly]="true"
+        />
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="administrativeProvinceId">Tỉnh thành</label>
+        <app-select
+          [loading]="isLoadingAdministrativeProvince"
+          id="administrativeProvinceId"
+          formControlName="administrativeProvinceId"
+          [items]="listAdministrativeProvince"
+          bindValue="id"
+          bindLabel="nameVN"
+          [placeholder]="isLoadingAdministrativeProvince ? 'Đang tải...' : 'Chọn dữ liệu'"
+          (selectionChange)="ngModelChangeAdministrativeProvince($event)"
+        ></app-select>
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="administrativeDistrictId">Quận huyện</label>
+        <app-select
+          [loading]="isLoadingAdministrativeDistrict"
+          id="administrativeDistrictId"
+          formControlName="administrativeDistrictId"
+          [items]="listAdministrativeDistrict"
+          bindValue="id"
+          bindLabel="nameVN"
+          [placeholder]="isLoadingAdministrativeDistrict ? 'Đang tải...' : 'Chọn dữ liệu'"
+          (selectionChange)="ngModelChangeAdministrativeDistrict($event)"
+        ></app-select>
+      </div>
+      <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="administrativeWardId">Xã phường</label>
+        <app-select
+          [loading]="isLoadingAdministrativeWard"
+          id="administrativeWardId"
+          formControlName="administrativeWardId"
+          [items]="listAdministrativeWard"
+          bindValue="id"
+          bindLabel="nameVN"
+          [placeholder]="isLoadingAdministrativeWard ? 'Đang tải...' : 'Chọn dữ liệu'"
+        ></app-select>
+      </div>
+      <div class="col-xl-5 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="address">Địa chỉ</label>
+        <textarea
+          id="address"
+          class="form-control"
+          formControlName="address"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+      <div class="col-xl-7 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="result">Kết quả</label>
+        <textarea
+          id="result"
+          class="form-control"
+          formControlName="result"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="diagnosis">Chuẩn đoán</label>
+        <textarea
+          id="diagnosis"
+          class="form-control"
+          formControlName="diagnosis"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Patient detail (examination lines) -->
+    <div class="row">
+      <div class="col-12">
+        <!-- Detail form: Enter here must not submit the outer patient form -->
+        <div
+          class="table-responsive"
+          [formGroup]="formGroupDetail"
+          (keydown.enter)="$any($event.target)?.tagName !== 'TEXTAREA' && $event.preventDefault()"
+        >
+          <table class="table table-bordered table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="width: 300px">Danh mục khám bệnh</th>
+                <th style="width: 100px">Đơn giá</th>
+                <th style="width: 80px">Số lần</th>
+                <th style="width: 120px">Thành tiền</th>
+                <th style="width: 150px">Bác sĩ</th>
+                <th style="width: 250px">Kết quả</th>
+                <th class="text-center" style="width: 110px">#</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <app-select
+          [loading]="isLoadingMedicalExamination"
+                    id="medicalExaminationId"
+                    formControlName="medicalExaminationId"
+                    [items]="listMedicalExamination"
+                    bindValue="id"
+                    bindLabel="name"
+                    [placeholder]="isLoadingMedicalExamination ? 'Đang tải...' : 'Chọn danh mục'"
+                    [invalid]="isInvalidDetail('medicalExaminationId')"
+                  ></app-select>
+                  @if (isInvalidDetail('medicalExaminationId')) {
+                    <div class="invalid-feedback d-block">Vui lòng chọn dữ liệu</div>
+                  }
+                </td>
+                <td></td>
+                <td>
+                  <input
+                    id="quantity"
+                    type="text"
+                    class="form-control"
+                    formControlName="quantity"
+                    onkeypress="return isNumber(event)"
+                    maxlength="10"
+                    autocomplete="off"
+                  />
+                </td>
+                <td></td>
+                <td>
+                  <app-select
+          [loading]="isLoadingPerson"
+                    id="personId"
+                    formControlName="personId"
+                    [items]="listPerson"
+                    bindValue="id"
+                    bindLabel="fullName"
+                    [placeholder]="isLoadingPerson ? 'Đang tải...' : 'Chọn bác sĩ'"
+                    [invalid]="isInvalidDetail('personId')"
+                  ></app-select>
+                  @if (isInvalidDetail('personId')) {
+                    <div class="invalid-feedback d-block">Vui lòng chọn dữ liệu</div>
+                  }
+                </td>
+                <td>
+                  <textarea
+                    id="resultDetail"
+                    class="form-control"
+                    formControlName="result"
+                    placeholder="Nhập kết quả"
+                    rows="1"
+                    autocomplete="off"
+                  ></textarea>
+                </td>
+                <td class="text-center">
+                  @if (!isEdit) {
+                    <button
+                      type="button"
+                      class="btn btn-success light btn-xs sharp"
+                      title="Thêm mới"
+                      (click)="onAddRow()"
+                    >
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      class="btn btn-primary light btn-xs sharp me-1"
+                      title="Cập nhật"
+                      (click)="onUpdateRow()"
+                    >
+                      <i class="fa-solid fa-check"></i>
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-danger light btn-xs sharp"
+                      title="Hủy"
+                      (click)="onCancelRow()"
+                    >
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  }
+                </td>
+              </tr>
+              @for (data of listPatientDetail; track $index) {
+                <tr>
+                  <td>{{ data.medicalExaminationName }}</td>
+                  <td>{{ data.price | number : "1.0" : "en-US" }} vnđ</td>
+                  <td>{{ data.quantity }}</td>
+                  <td>{{ data.totalPrice | number : "1.0" : "en-US" }} vnđ</td>
+                  <td>{{ data.personName }}</td>
+                  <td>{{ data.result }}</td>
+                  <td class="text-center">
+                    @if (!isEdit) {
+                      <button
+                        type="button"
+                        class="btn btn-primary light btn-xs sharp me-1"
+                        title="Sửa dữ liệu"
+                        (click)="onEditRow(data.id)"
+                      >
+                        <i class="fa-solid fa-pen"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="btn btn-danger light btn-xs sharp"
+                        title="Xóa dữ liệu"
+                        (click)="onDeleteRow(data.id)"
+                      >
+                        <i class="fa-solid fa-trash"></i>
+                      </button>
+                    }
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="7" class="text-center text-muted py-4">Không có dữ liệu</td>
+                </tr>
+              }
+              <tr>
+                <td colspan="7" class="text-end">
+                  <b>Tổng tiền: {{ totalPricePatient | number : "1.0" : "en-US" }} vnđ</b>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    @if (data) {
+      <button type="button" class="btn btn-info light btn-sm" (click)="openReExamination()">
+        <i class="fa-solid fa-rotate-right me-1"></i>Tái khám
+      </button>
+    }
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

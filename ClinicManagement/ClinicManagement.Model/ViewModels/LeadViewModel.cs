@@ -1,0 +1,63 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ClinicManagement.Model.ViewModels
+{
+    public class LeadViewModel : BaseViewModel
+    {
+
+        public string? Code { get; set; }
+        public string? Name { get; set; }
+        public string? Type { get; set; }
+        public Guid? CustomerId { get; set; }
+        public string? CifNo { get; set; }
+        public string? TaxNo { get; set; }
+        public string? CustomerName { get; set; }
+        public string? PhoneNumber { get; set; }
+        public string? Email { get; set; }
+        public Guid? ProductGroupId { get; set; }
+        public string? ProductGroupName { get; set; }
+        public Guid? ProductId { get; set; }
+        public string? ProductName { get; set; }
+        public Guid? SourceId { get; set; }
+        public string? SourceName { get; set; }
+        public Guid? ChannelId { get; set; }
+        public string? ChannelName { get; set; }
+        public Guid? FlowId { get; set; }
+        public string? FlowName { get; set; }
+        public Guid? StageId { get; set; }
+        public string? StageName { get; set; }
+        public Guid? StageStatusId { get; set; }
+        public string? StageStatusName { get; set; }
+        public Guid? ResultId { get; set; }
+        public string? ResultName { get; set; }
+        public Guid? NextStepId { get; set; }
+        public string? NextStepName { get; set; }
+        public Guid? StatusId { get; set; }
+        public string? StatusName { get; set; }
+        public string? ExpectedValue { get; set; }
+        public DateTime? ExpectedTime { get; set; }
+        public string? Purpose { get; set; }
+        public Guid? ReasonId { get; set; }
+        public string? ReasonName { get; set; }
+        public string? ReasonNote { get; set; }
+        public Guid? RegionId { get; set; }
+        public string? RegionName { get; set; }
+        public Guid? AreaId { get; set; }
+        public string? AreaName { get; set; }
+        public Guid? BranchId { get; set; }
+        public string? BranchName { get; set; }
+        public Guid? DepartmentId { get; set; }
+        public string? DepartmentName { get; set; }
+        public Guid? UserId { get; set; }
+        public string? UserName { get; set; }
+        public bool? IsDuplicate { get; set; }
+        public string? LeadScoring { get; set; }
+        public string? Note { get; set; }
+        public string? ExternalData { get; set; }
+        public string? ExternalValue { get; set; }
+    }
+}

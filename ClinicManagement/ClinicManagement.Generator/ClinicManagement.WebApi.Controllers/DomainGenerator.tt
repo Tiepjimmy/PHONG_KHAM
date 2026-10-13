@@ -1,0 +1,166 @@
+﻿<#@ include file="../OrmLite.Core.ttinclude" #>
+
+<#
+	// Settings
+	ConnectionStringName = "MainConnectionString";			// Uses last connection string in config if not specified
+	Namespace = "ClinicManagement.WebApi.Controllers";
+	bool SplitIntoMultipleFiles = true;		// if true: Generates one file for every class
+	bool MakeSingular = false;			// if true: Changes the classname to singular if tablename is not singular
+
+    // Read schema
+	var tables = LoadTables(MakeSingular);
+
+
+/*
+	// Tweak Schema
+	tables["tablename"].Ignore = true;							// To ignore a table
+	tables["tablename"].ClassName = "newname";					// To change the class name of a table
+	tables["tablename"]["columnname"].Ignore = true;			// To ignore a column
+	tables["tablename"]["columnname"].PropertyName="newname";	// To change the property name of a column
+	tables["tablename"]["columnname"].PropertyType="bool";		// To change the property type of a column
+*/
+
+
+	// Generate output
+	if (tables.Count>0)
+	{
+#>
+<#
+if (string.IsNullOrEmpty(Namespace)) Namespace=ConnectionStringName;
+if (string.IsNullOrEmpty(Namespace)) Namespace="OrmLitePoco";
+var manager = Manager.Create(Host, GenerationEnvironment);
+manager.StartHeader(); #>using ClinicManagement.Model.Helper;
+using ClinicManagement.Model.Request;
+using ClinicManagement.Model.SearchRequest;
+using ClinicManagement.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
+using System.Net;
+
+namespace <#=Namespace #>
+{
+<#manager.EndBlock(); #>
+<#
+foreach(Table tbl in from t in tables where !t.Ignore select t)
+{
+	if(TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "DocumentFile"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "LocationTracking"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "ObjectMenu"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "User"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserGroup"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserRole"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "AuditChange"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserClaim")
+	{
+		manager.StartNewFile(TableName2ClassName(tbl.Name.Replace("Tbl", "")) + "Controller.cs");
+	}
+#>	public class <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Controller(I<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Service service) : BaseController
+    {
+		private readonly I<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Service _service = service;
+
+		[HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll([FromQuery] <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>SearchRequest request)
+        {
+            try
+            {
+                if (!ModelState.IsValid || null == request)
+                {
+                    return BadRequest(ConstantHelper.Message.ModelStateMessage);
+                }
+                return Ok(await _service.GetAll(request));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetAll: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+
+        [HttpPost("Insert")]
+        public async Task<IActionResult> Insert([FromForm] <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request)
+        {
+            try
+            {
+                if (!ModelState.IsValid || null == request)
+                {
+                    return BadRequest(ConstantHelper.Message.ModelStateMessage);
+                }
+                return Ok(await _service.Save(request, ConstantHelper.TypeSave.Insert));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " Insert: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update([FromForm] <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request)
+        {
+            try
+            {
+                if (!ModelState.IsValid || null == request)
+                {
+                    return BadRequest(ConstantHelper.Message.ModelStateMessage);
+                }
+                return Ok(await _service.Save(request, ConstantHelper.TypeSave.Update));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " Update: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+
+        [HttpDelete("Delete")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            try
+            {
+                <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request = new()
+                {
+                    Id = id
+                };
+                return Ok(await _service.Save(request, ConstantHelper.TypeSave.Delete));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " Delete: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+
+        [HttpGet("GetById")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            try
+            {
+                return Ok(await _service.GetById(id));
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetById: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+
+        [HttpGet("GetAllData")]
+        public IActionResult GetAllData()
+        {
+            try
+            {
+                return Ok(_service.GetAllData());
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetAllData: ", ex.ToString()));
+                return StatusCode(Convert.ToInt32(HttpStatusCode.InternalServerError), ConstantHelper.Message.InternalServer);
+            }
+        }
+	}
+<# manager.EndBlock(); #>
+<#}#>
+<#manager.StartFooter();#>}
+<#manager.EndBlock(); #>
+<#manager.Process(SplitIntoMultipleFiles); #>
+<#}#>

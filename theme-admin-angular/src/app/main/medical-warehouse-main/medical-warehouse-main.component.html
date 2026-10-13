@@ -1,0 +1,154 @@
+@if (permission?.allowAccess) {
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Filter -->
+      <div class="card h-auto mb-3">
+        <div class="card-body py-3">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <div class="row g-3 align-items-end">
+              <div class="col-xl-4 col-md-6">
+                <label class="form-label" for="searchText">Tên thuốc</label>
+                <input
+                  id="searchText"
+                  type="text"
+                  class="form-control"
+                  formControlName="searchText"
+                  placeholder="Nhập dữ liệu"
+                  autocomplete="off"
+                />
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <label class="form-label" for="supplierId">Nhà cung cấp</label>
+                <app-select
+          [loading]="isLoadingSupplierId"
+                  formControlName="supplierId"
+                  [items]="listSupplier"
+                  bindValue="id"
+                  bindLabel="name"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-xl-4 col-md-6">
+                <label class="form-label" for="quantity">Trạng thái</label>
+                <app-select
+                  formControlName="quantity"
+                  [items]="listQuantity"
+                  bindValue="id"
+                  bindLabel="name"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-12 text-md-end">
+                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
+                </button>
+                @if (permission.allowAdd) {
+                  <button type="button" class="btn btn-success btn-sm me-2" title="Thêm mới dữ liệu" (click)="openModal()">
+                    <i class="fa-solid fa-plus me-1"></i>Thêm mới
+                  </button>
+                }
+                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
+                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card h-auto">
+        <div class="card-body p-0">
+          <div class="table-responsive active-projects style-1">
+            <table class="table clinic-table mb-0">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 45px">STT</th>
+                  <th class="sortable" style="width: 200px" (click)="sort('name')">
+                    Tên thuốc
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('name')"></i>
+                  </th>
+                  <th class="sortable" style="width: 200px" (click)="sort('supplierName')">
+                    Nhà cung cấp
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('supplierName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 100px" (click)="sort('unitMeasureName')">
+                    Đơn vị
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('unitMeasureName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 100px" (click)="sort('quantity')">
+                    Số lượng
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('quantity')"></i>
+                  </th>
+                  <th class="sortable" style="width: 120px" (click)="sort('price')">
+                    Giá bán
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('price')"></i>
+                  </th>
+                  <th class="sortable" style="width: 140px" (click)="sort('expiry')">
+                    Hạn sử dụng
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('expiry')"></i>
+                  </th>
+                  <th class="sortable" style="width: 200px" (click)="sort('note')">
+                    Ghi chú
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('note')"></i>
+                  </th>
+                  <th class="text-end" style="width: 100px">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (data of listData; track data.id) {
+                  <tr>
+                    <td class="text-center">{{ data.stt }}</td>
+                    <td>{{ data.name }}</td>
+                    <td>{{ data.supplierName }}</td>
+                    <td>{{ data.unitMeasureName }}</td>
+                    <td>{{ data.quantity }}</td>
+                    <td>{{ data.price | number : "1.0" : "en-US" }} vnđ</td>
+                    <td>{{ data.expiry | date : dateFormat }}</td>
+                    <td>{{ data.note }}</td>
+                    <td class="text-end">
+                      @if (permission.allowEdit) {
+                        <button
+                          type="button"
+                          class="btn btn-primary light btn-xs sharp me-1"
+                          title="Sửa dữ liệu"
+                          (click)="openModal(data)"
+                        >
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                      }
+                      @if (permission.allowDelete) {
+                        <button
+                          type="button"
+                          class="btn btn-danger light btn-xs sharp"
+                          title="Xóa dữ liệu"
+                          (click)="delete(data.id)"
+                        >
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="9" class="text-center text-muted py-4">Không có dữ liệu</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-table-pager
+            [page]="table.page"
+            [pageSize]="table.pageSize"
+            [total]="table.total"
+            (pageChange)="changePage($event)"
+            (pageSizeChange)="changePageSize($event)"
+          ></app-table-pager>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-not-found isFullPage="false"></app-not-found>
+}
+<app-loading *ngIf="isLoading"></app-loading>

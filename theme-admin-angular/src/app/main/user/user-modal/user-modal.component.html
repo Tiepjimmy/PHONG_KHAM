@@ -1,0 +1,95 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="userName">
+          Tên đăng nhập <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="userName"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('userName')"
+          formControlName="userName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+          [readonly]="isReadonly"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="listUserGroupId">
+          Nhóm quyền <span class="text-danger">(*)</span>
+        </label>
+        <app-select
+          [loading]="isLoadingUserGroupId"
+          formControlName="listUserGroupId"
+          [items]="listUserGroup"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          [multiple]="true"
+          [invalid]="isInvalid('listUserGroupId')"
+        ></app-select>
+        @if (isInvalid('listUserGroupId')) {
+          <div class="invalid-feedback d-block">Vui lòng chọn dữ liệu</div>
+        }
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="personKeyword">Họ và tên</label>
+        <!-- Server-side search: type at least 3 characters to load matching people -->
+        <div class="input-group mb-2">
+          <span class="input-group-text"><i class="fa-solid fa-magnifying-glass"></i></span>
+          <input
+            #personKeyword
+            id="personKeyword"
+            type="text"
+            class="form-control"
+            placeholder="Nhập 3 ký tự ..."
+            autocomplete="off"
+            (input)="personSearch(personKeyword.value, false)"
+          />
+        </div>
+        <app-select
+          [loading]="isLoadingPerson"
+          formControlName="personId"
+          [items]="listPerson"
+          bindValue="id"
+          bindLabel="fullName"
+          [placeholder]="isLoadingPerson ? 'Đang tải...' : 'Chọn dữ liệu'"
+        ></app-select>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6 mb-3">
+        <label class="form-label d-block" for="isActive">Trạng thái</label>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" formControlName="isActive" id="isActive" />
+          <label class="form-check-label" for="isActive">
+            {{ formGroup.get('isActive')?.value ? 'Đang hoạt động' : 'Đang khóa' }}
+          </label>
+        </div>
+      </div>
+      <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-6 mb-3">
+        <label class="form-label d-block" for="isAdmin">Cấp quản trị</label>
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" formControlName="isAdmin" id="isAdmin" />
+          <label class="form-check-label" for="isAdmin">
+            {{ formGroup.get('isAdmin')?.value ? 'Có' : 'Không' }}
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

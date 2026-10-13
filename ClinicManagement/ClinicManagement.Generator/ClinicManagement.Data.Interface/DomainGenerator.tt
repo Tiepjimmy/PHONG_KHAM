@@ -1,0 +1,59 @@
+﻿<#@ include file="../OrmLite.Core.ttinclude" #>
+
+<#
+	// Settings
+	ConnectionStringName = "MainConnectionString";			// Uses last connection string in config if not specified
+	Namespace = "ClinicManagement.Data.Interface";
+	bool SplitIntoMultipleFiles = true;		// if true: Generates one file for every class
+	bool MakeSingular = false;			// if true: Changes the classname to singular if tablename is not singular
+
+    // Read schema
+	var tables = LoadTables(MakeSingular);
+
+
+/*
+	// Tweak Schema
+	tables["tablename"].Ignore = true;							// To ignore a table
+	tables["tablename"].ClassName = "newname";					// To change the class name of a table
+	tables["tablename"]["columnname"].Ignore = true;			// To ignore a column
+	tables["tablename"]["columnname"].PropertyName="newname";	// To change the property name of a column
+	tables["tablename"]["columnname"].PropertyType="bool";		// To change the property type of a column
+*/
+
+
+	// Generate output
+	if (tables.Count>0)
+	{
+#>
+<#
+if (string.IsNullOrEmpty(Namespace)) Namespace=ConnectionStringName;
+if (string.IsNullOrEmpty(Namespace)) Namespace="OrmLitePoco";
+var manager = Manager.Create(Host, GenerationEnvironment);
+manager.StartHeader(); #>using ClinicManagement.Model.Entity;
+
+namespace <#=Namespace #>
+{
+<#manager.EndBlock(); #>
+<#
+foreach(Table tbl in from t in tables where !t.Ignore select t)
+{
+	if(TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "DocumentFile"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "ObjectMenu"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "LocationTracking"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "User"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserGroup"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserRole"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "AuditChange"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserClaim")
+	{
+		manager.StartNewFile("I" + TableName2ClassName(tbl.Name.Replace("Tbl", "")) + "Repository.cs");
+	}
+#>	public interface I<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository : IRepository<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>
+    {
+	}
+<# manager.EndBlock(); #>
+<#}#>
+<#manager.StartFooter();#>}
+<#manager.EndBlock(); #>
+<#manager.Process(SplitIntoMultipleFiles); #>
+<#}#>

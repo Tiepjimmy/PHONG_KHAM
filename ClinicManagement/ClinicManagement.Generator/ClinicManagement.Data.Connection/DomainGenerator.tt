@@ -1,0 +1,146 @@
+﻿<#@ include file="../OrmLite.Core.ttinclude" #>
+
+<#
+	// Settings
+	ConnectionStringName = "MainConnectionString";			// Uses last connection string in config if not specified
+	Namespace = "ClinicManagement.Data.Connection";
+	bool SplitIntoMultipleFiles = true;		// if true: Generates one file for every class
+	bool MakeSingular = false;			// if true: Changes the classname to singular if tablename is not singular
+
+    // Read schema
+	var tables = LoadTables(MakeSingular);
+
+
+/*
+	// Tweak Schema
+	tables["tablename"].Ignore = true;							// To ignore a table
+	tables["tablename"].ClassName = "newname";					// To change the class name of a table
+	tables["tablename"]["columnname"].Ignore = true;			// To ignore a column
+	tables["tablename"]["columnname"].PropertyName="newname";	// To change the property name of a column
+	tables["tablename"]["columnname"].PropertyType="bool";		// To change the property type of a column
+*/
+
+
+	// Generate output
+	if (tables.Count>0)
+	{
+#>
+<#
+if (string.IsNullOrEmpty(Namespace)) Namespace=ConnectionStringName;
+if (string.IsNullOrEmpty(Namespace)) Namespace="OrmLitePoco";
+var manager = Manager.Create(Host, GenerationEnvironment);
+manager.StartHeader(); #>using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using ClinicManagement.Data.Share;
+using ClinicManagement.Model.Entity;
+using ClinicManagement.Model.Helper;
+using System.Text;
+
+namespace <#=Namespace #>
+{
+<#manager.EndBlock(); #>
+<#
+	manager.StartNewFile("DatabaseContext.cs");	
+#>	public class DatabaseContext(DbContextOptions<DatabaseContext> options, IAuthenticatedService authenticatedService) : IdentityDbContext(options)
+    {
+        private readonly IAuthenticatedService _authenticatedService = authenticatedService;
+
+		public virtual DbSet<User> User { get; set; }
+        public virtual DbSet<ObjectMenu> ObjectMenu { get; set; }
+        public virtual DbSet<UserGroup> UserGroup { get; set; }
+        public virtual DbSet<UserRole> UserRole { get; set; }
+        public virtual DbSet<DocumentFile> DocumentFile { get; set; }
+        public virtual DbSet<LocationTracking> LocationTracking { get; set; }
+        public virtual DbSet<AuditChange> AuditChange { get; set; }
+        public virtual DbSet<UserClaim> UserClaim { get; set; }
+		//Custom
+	<#	foreach(Table tbl in from t in tables where !t.Ignore select t)
+		{#><#
+			if(TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "DocumentFile"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "LocationTracking"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "ObjectMenu"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "User"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserGroup"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserRole"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "AuditChange"
+			&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserClaim")
+			{#>
+	public virtual DbSet<<#=TableName2ClassName(tbl.Name.Replace("Tbl", ""))#>> <#=TableName2ClassName(tbl.Name.Replace("Tbl", ""))#> { get; set; }
+	<#}#><#}#>
+
+        public async Task<int> SaveChangesAsync(string typeSave, CancellationToken cancellationToken = new CancellationToken())
+        {
+            var user = _authenticatedService.Id;
+            var date = DateTime.Now;
+            foreach (var entry in ChangeTracker.Entries<BaseEntity>().ToList())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        entry.Entity.CreatedDate = date;
+                        entry.Entity.CreatedBy = user;
+                        entry.Entity.IsDeleted = false;
+                        break;
+                    case EntityState.Modified:
+                        if (typeSave == ConstantHelper.TypeSave.Update || typeSave == ConstantHelper.TypeSave.UpdateProfile)
+                        {
+                            entry.Entity.ModifiedDate = date;
+                            entry.Entity.ModifiedBy = user;
+                        }
+                        if (typeSave == ConstantHelper.TypeSave.Delete)
+                        {
+                            entry.Entity.DeletedDate = date;
+                            entry.Entity.DeleteddBy = user;
+                            entry.Entity.IsDeleted = true;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            var modifiedEntities = ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Added || e.State == EntityState.Modified).ToList();
+            foreach (var modifiedEntity in modifiedEntities)
+            {
+                AuditChange auditLog = new()
+                {
+                    IdChange = modifiedEntity.Entity.Id,
+                    EntityName = modifiedEntity.Entity.GetType().Name,
+                    Action = modifiedEntity.State.ToString(),
+                    CreatedDate = date,
+                    CreatedBy = user,
+                    Changes = GetChanges(modifiedEntity, modifiedEntity.State),
+                    IsDeleted = false,
+                };
+                AuditChange.Add(auditLog);
+            }
+            return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        private static string GetChanges(EntityEntry entity, EntityState state)
+        {
+            StringBuilder changes = new();
+            foreach (var property in entity.OriginalValues.Properties)
+            {
+                var originalValue = state == EntityState.Modified ? entity.OriginalValues[property] : ConstantHelper.Space;
+                var currentValue = entity.CurrentValues[property];
+                if (!Equals(originalValue, currentValue))
+                {
+                    if (state == EntityState.Added && !string.IsNullOrEmpty(currentValue?.ToString()?.Trim()))
+                    {
+                        changes.AppendLine($"- {property.Name}: '{currentValue}' {ConstantHelper.Break}");
+                    }
+                    if (state == EntityState.Modified)
+                    {
+                        changes.AppendLine($"- {property.Name}: From '{originalValue}' to '{currentValue}' {ConstantHelper.Break}");
+                    }
+                }
+            }
+            return changes.ToString();
+        }
+    }
+<# manager.EndBlock(); #>
+<#manager.StartFooter();#>}
+<#manager.EndBlock(); #>
+<#manager.Process(SplitIntoMultipleFiles); #>
+<#}#>

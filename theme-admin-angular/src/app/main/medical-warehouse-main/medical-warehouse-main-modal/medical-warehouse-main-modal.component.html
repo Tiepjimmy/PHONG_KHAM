@@ -1,0 +1,143 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="supplierId">
+          Nhà cung cấp <span class="text-danger">(*)</span>
+        </label>
+        <app-select
+          [loading]="isLoadingSupplier"
+          formControlName="supplierId"
+          [items]="listSupplier"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          [invalid]="isInvalid('supplierId')"
+        ></app-select>
+        @if (isInvalid('supplierId')) {
+          <div class="invalid-feedback d-block">Vui lòng chọn dữ liệu</div>
+        }
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="name">
+          Tên thuốc <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('name')"
+          formControlName="name"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="quantity">Số lượng</label>
+        <input
+          id="quantity"
+          type="text"
+          class="form-control"
+          formControlName="quantity"
+          placeholder="Nhập dữ liệu"
+          onkeypress="return isNumber(event)"
+          (ngModelChange)="onChangeQuantity($event)"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="unitMeasureId">Đơn vị tính</label>
+        <app-select
+          [loading]="isLoadingUnitMeasure"
+          formControlName="unitMeasureId"
+          [items]="listUnitMeasure"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+        ></app-select>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="priceInput">
+          Giá nhập <span class="text-danger">(*)</span>
+        </label>
+        <div class="input-group has-validation">
+          <input
+            id="priceInput"
+            class="form-control"
+            [class.is-invalid]="isInvalid('priceInput')"
+            appNumberInput
+            formControlName="priceInput"
+            [min]="0"
+            (ngModelChange)="onChangePriceInput($event)"
+            autocomplete="off"
+          />
+          <span class="input-group-text">vnđ</span>
+          <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="dateInput">
+          Ngày nhập kho <span class="text-danger">(*)</span>
+        </label>
+        <app-date-picker inputId="dateInput" formControlName="dateInput" [invalid]="isInvalid('dateInput')"></app-date-picker>
+        @if (isInvalid('dateInput')) {<div class="invalid-feedback d-block">Vui lòng nhập dữ liệu</div>}
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="price">
+          Giá bán <span class="text-danger">(*)</span>
+        </label>
+        <div class="input-group has-validation">
+          <input
+            id="price"
+            class="form-control"
+            [class.is-invalid]="isInvalid('price')"
+            appNumberInput
+            formControlName="price"
+            [min]="0"
+            autocomplete="off"
+          />
+          <span class="input-group-text">vnđ</span>
+          <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="expiry">
+          Hạn dùng <span class="text-danger">(*)</span>
+        </label>
+        <app-date-picker inputId="expiry" formControlName="expiry" [invalid]="isInvalid('expiry')"></app-date-picker>
+        @if (isInvalid('expiry')) {<div class="invalid-feedback d-block">Vui lòng nhập dữ liệu</div>}
+      </div>
+      <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="priceTotal">
+          Thành tiền <span class="text-danger">(*)</span>
+        </label>
+        <div class="input-group has-validation">
+          <input
+            id="priceTotal"
+            class="form-control"
+            [class.is-invalid]="isInvalid('priceTotal')"
+            appNumberInput
+            formControlName="priceTotal"
+            readonly
+          />
+          <span class="input-group-text">vnđ</span>
+          <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

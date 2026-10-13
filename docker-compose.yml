@@ -1,0 +1,28 @@
+name: clinic
+
+# Database runs on an existing SQL Server (see DB_CONNECTION_STRING in .env)
+services:
+  api:
+    build:
+      context: ./ClinicManagement
+    restart: unless-stopped
+    environment:
+      ConnectionStrings__MainConnectionString: ${DB_CONNECTION_STRING}
+      # Public URL used to build avatar/attachment links (served through nginx /Import)
+      AppSettingHelper__DomainFile: ${PUBLIC_URL}
+    volumes:
+      - api-import:/app/wwwroot/Import
+      - api-logs:/app/wwwroot/Logs
+
+  web:
+    build:
+      context: ./theme-admin-angular
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "${WEB_PORT:-6200}:80"
+
+volumes:
+  api-import:
+  api-logs:

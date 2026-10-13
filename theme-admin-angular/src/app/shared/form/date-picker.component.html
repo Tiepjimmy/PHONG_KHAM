@@ -1,0 +1,28 @@
+<div class="input-group">
+  <input
+    class="form-control"
+    [class.is-invalid]="invalid"
+    [attr.id]="inputId || null"
+    [placeholder]="placeholder"
+    ngbDatepicker
+    #datepicker="ngbDatepicker"
+    container="body"
+    [minDate]="minDate"
+    [maxDate]="maxDate"
+    [ngModel]="model"
+    (ngModelChange)="onModelChange($event)"
+    (blur)="onBlur()"
+    (click)="datepicker.toggle()"
+    [disabled]="disabled"
+    autocomplete="off"
+  />
+  <button
+    class="btn btn-primary light"
+    type="button"
+    [disabled]="disabled"
+    (click)="datepicker.toggle()"
+    aria-label="Chọn ngày"
+  >
+    <i class="fa-regular fa-calendar"></i>
+  </button>
+</div>

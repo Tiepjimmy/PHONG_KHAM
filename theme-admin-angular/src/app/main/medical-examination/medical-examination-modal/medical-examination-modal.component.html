@@ -1,0 +1,61 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="name">
+          Tên danh mục <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('name')"
+          formControlName="name"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="price">Đơn giá</label>
+        <div class="input-group">
+          <input
+            id="price"
+            class="form-control"
+            appNumberInput
+            formControlName="price"
+            [min]="0"
+            autocomplete="off"
+          />
+          <span class="input-group-text">vnđ</span>
+        </div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="normalIndex">Chỉ số bình thường</label>
+        <input
+          id="normalIndex"
+          type="text"
+          class="form-control"
+          formControlName="normalIndex"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

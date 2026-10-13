@@ -1,0 +1,253 @@
+﻿<#@ include file="../OrmLite.Core.ttinclude" #>
+
+<#
+	// Settings
+	ConnectionStringName = "MainConnectionString";			// Uses last connection string in config if not specified
+	Namespace = "ClinicManagement.Services.Implement";
+	bool SplitIntoMultipleFiles = true;		// if true: Generates one file for every class
+	bool MakeSingular = false;			// if true: Changes the classname to singular if tablename is not singular
+
+    // Read schema
+	var tables = LoadTables(MakeSingular);
+
+
+/*
+	// Tweak Schema
+	tables["tablename"].Ignore = true;							// To ignore a table
+	tables["tablename"].ClassName = "newname";					// To change the class name of a table
+	tables["tablename"]["columnname"].Ignore = true;			// To ignore a column
+	tables["tablename"]["columnname"].PropertyName="newname";	// To change the property name of a column
+	tables["tablename"]["columnname"].PropertyType="bool";		// To change the property type of a column
+*/
+
+
+	// Generate output
+	if (tables.Count>0)
+	{
+#>
+<#
+if (string.IsNullOrEmpty(Namespace)) Namespace=ConnectionStringName;
+if (string.IsNullOrEmpty(Namespace)) Namespace="OrmLitePoco";
+var manager = Manager.Create(Host, GenerationEnvironment);
+manager.StartHeader(); #>using AutoMapper;
+using ClinicManagement.Data.Interface;
+using ClinicManagement.Data.Repositories;
+using ClinicManagement.Model.Entity;
+using ClinicManagement.Model.Helper;
+using ClinicManagement.Model.Request;
+using ClinicManagement.Model.SearchRequest;
+using ClinicManagement.Model.ViewModels;
+using ClinicManagement.Services.Interface;
+using Dapper;
+using Serilog;
+using System.Net;
+
+namespace <#=Namespace #>
+{
+<#manager.EndBlock(); #>
+<#
+foreach(Table tbl in from t in tables where !t.Ignore select t)
+{
+	if(TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "DocumentFile"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "LocationTracking"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "ObjectMenu"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "User"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserGroup"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserRole"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "AuditChange"
+	&& TableName2ClassName(tbl.Name.Replace("Tbl", "")) != "UserClaim")
+	{
+		manager.StartNewFile(TableName2ClassName(tbl.Name.Replace("Tbl", "")) + "Service.cs");
+	}
+#>	public class <#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Service(IUnitOfWork unitOfWork, IDapperRepository dapperRepository, IMapper mapper
+		, IAuditChangeService auditChangeService) : I<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Service
+    {
+		private readonly IUnitOfWork _unitOfWork = unitOfWork;
+		private readonly IDapperRepository _dapperRepository = dapperRepository;
+		private readonly IMapper _mapper = mapper;
+        private readonly IAuditChangeService _auditChangeService = auditChangeService;
+
+		public async Task<IResults<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>ViewModel>> GetAll(<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>SearchRequest request)
+        {
+            try
+            {
+                DynamicParameters dynamicParameters = new();
+                dynamicParameters.Add("@SearchText", request.SearchText);
+                dynamicParameters.Add(ConstantHelper.Page, request.Page);
+                dynamicParameters.Add(ConstantHelper.PageSize, request.PageSize);
+                var list = (await _dapperRepository.QueryMultipleUsingStoreProcAsync<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>ViewModel>("usp<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>_GetAll", dynamicParameters)).ToList();
+                if (list.Count != 0)
+                {
+                    int i = 0;
+                    list.ForEach(x =>
+                    {
+                        i++;
+                        x.STT = (request.Page - 1) * request.PageSize + i;
+                    });
+                }
+                return new Results<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>ViewModel>
+                {
+                    ResponseCode = Convert.ToInt32(HttpStatusCode.OK),
+                    ResponseMessage = ConstantHelper.Message.GetAllSuccessfully,
+                    ListData = list,
+                    TotalRecords = list.FirstOrDefault()?.TotalRow ?? 0
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetAll: ", ex.ToString()));
+                throw;
+            }
+        }
+
+        public IResults<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>> GetAllData()
+        {
+            try
+            {
+                var list = _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.GetAll().Where(x => !x.IsDeleted).ToList();
+                return new Results<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>
+                {
+                    ResponseCode = Convert.ToInt32(HttpStatusCode.OK),
+                    ResponseMessage = ConstantHelper.Message.GetAllSuccessfully,
+                    ListData = list,
+                    TotalRecords = list.Count
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetAllData: ", ex.ToString()));
+                throw;
+            }
+        }
+
+        public async Task<IResult<bool>> Save(<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request, string typeSave)
+        {
+            using var tran = await _unitOfWork.OpenTransaction();
+            try
+            {
+                var result = string.Empty;
+                switch (typeSave)
+                {
+                    case ConstantHelper.TypeSave.Insert:
+                        result = await Insert(request, typeSave);
+                        break;
+                    case ConstantHelper.TypeSave.Update:
+                        result = await Update(request, typeSave);
+                        break;
+                    case ConstantHelper.TypeSave.Delete:
+                        result = await Delete(request.Id, typeSave);
+                        break;
+                    default:
+                        break;
+                }
+                _unitOfWork.CommitTransaction();
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return new Result<bool>
+                    {
+                        ResponseCode = Convert.ToInt32(HttpStatusCode.BadRequest),
+                        ResponseMessage = result,
+                        Data = false
+                    };
+                }
+                return new Result<bool>
+                {
+                    ResponseCode = Convert.ToInt32(HttpStatusCode.OK),
+                    ResponseMessage = typeSave == ConstantHelper.TypeSave.Delete ? ConstantHelper.Message.DeleteSuccess : ConstantHelper.Message.SaveSuccess,
+                    Data = true
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " Save: ", ex.ToString()));
+                _unitOfWork.RollbackTransaction();
+                throw;
+            }
+        }
+
+        private async Task<string> Insert(<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request, string typeSave)
+        {
+            var insert = _mapper.Map<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>(request);
+            _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.Add(insert);
+            await _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.CommitAsync(typeSave);
+            return string.Empty;
+        }
+
+        private async Task<string> Update(<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Request request, string typeSave)
+        {
+            var exist = _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.GetSingle(x => x.Id == request.Id && !x.IsDeleted);
+            if (string.IsNullOrEmpty(request.Id.ToString()) || exist == null)
+            {
+                return ConstantHelper.Message.RecordNotFoundMessage;
+            }
+            var update = _mapper.Map(request, exist);
+            _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.Update(update);
+            await _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.CommitAsync(typeSave);
+            return string.Empty;
+        }
+
+        private async Task<string> Delete(Guid? id, string typeSave)
+        {
+            if (string.IsNullOrEmpty(id.ToString()))
+            {
+                return ConstantHelper.Message.RecordNotFoundMessage;
+            }
+            var checkForeignKey = (await _auditChangeService.GetColumnNameForeignKey()).ListData.Where(x => (x.ColumnName ?? string.Empty).Contains(nameof(<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>))).ToList();
+            if (checkForeignKey.Count != 0)
+            {
+                foreach (var item in checkForeignKey)
+                {
+                    var strSql = string.Concat("SELECT COUNT(*) FROM ", item.TableName, " where ", item.ColumnName, " = '", id, "' AND IsDeleted = 0");
+                    DynamicParameters dynamicParameters = new();
+                    dynamicParameters.Add("@StrSql", strSql);
+                    var checkExist = _dapperRepository.QueryFirstOrDefaultUsingStoreProc<long>("uspSystem_ExecuteQuery", dynamicParameters);
+                    if (checkExist > 0)
+                    {
+                        return string.Format(ConstantHelper.Message.DeleteExistFail);
+                    }
+                }
+            }
+            var delete = _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.GetSingle(x => x.Id == id && !x.IsDeleted);
+            if (delete == null)
+            {
+                return ConstantHelper.Message.RecordNotFoundMessage;
+            }
+            _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.Update(delete);
+            await _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.CommitAsync(typeSave);
+            return string.Empty;
+        }
+
+        public async Task<IResult<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>> GetById(Guid id)
+        {
+            try
+            {
+                var data = await _unitOfWork.<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>Repository.GetSingleAsync(x => x.Id == id && !x.IsDeleted);
+                if (data == null)
+                {
+                    return new Result<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>
+                    {
+                        ResponseCode = Convert.ToInt32(HttpStatusCode.BadRequest),
+                        ResponseMessage = ConstantHelper.Message.RecordNotFoundMessage,
+                        Data = null,
+                    };
+                }
+                return new Result<<#=TableName2ClassName(tbl.ClassName.Replace("Tbl", ""))#>>
+                {
+                    ResponseCode = Convert.ToInt32(HttpStatusCode.OK),
+                    ResponseMessage = ConstantHelper.Message.GetAllSuccessfully,
+                    Data = data,
+                };
+            }
+            catch (Exception ex)
+            {
+                Log.Error(string.Concat("[", GetType().Name, "]", " GetById: ", ex.ToString()));
+                throw;
+            }
+        }
+	}
+<# manager.EndBlock(); #>
+<#}#>
+<#manager.StartFooter();#>}
+<#manager.EndBlock(); #>
+<#manager.Process(SplitIntoMultipleFiles); #>
+<#}#>

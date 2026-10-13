@@ -1,0 +1,158 @@
+@if (permission?.allowAccess) {
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Filter -->
+      <div class="card h-auto mb-3">
+        <div class="card-body py-3">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <div class="row g-3 align-items-end">
+              <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="searchText">Mã tỉnh thành hoặc tên tỉnh thành</label>
+                <input
+                  id="searchText"
+                  class="form-control"
+                  placeholder="Nhập dữ liệu"
+                  formControlName="searchText"
+                />
+              </div>
+              <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="administrativeUnitId">Đơn vị</label>
+                <app-select
+          [loading]="isLoadingAdministrativeUnit"
+                  formControlName="administrativeUnitId"
+                  [items]="listAdministrativeUnit"
+                  bindValue="id"
+                  bindLabel="fullNameVN"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="administrativeRegionId">Vùng</label>
+                <app-select
+          [loading]="isLoadingAdministrativeRegion"
+                  formControlName="administrativeRegionId"
+                  [items]="listAdministrativeRegion"
+                  bindValue="id"
+                  bindLabel="nameVN"
+                  placeholder="Chọn dữ liệu"
+                ></app-select>
+              </div>
+              <div class="col-12 text-md-end">
+                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
+                </button>
+                @if (permission.allowAdd) {
+                  <button type="button" class="btn btn-success btn-sm me-2" title="Thêm mới dữ liệu" (click)="openModal()">
+                    <i class="fa-solid fa-plus me-1"></i>Thêm mới
+                  </button>
+                }
+                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
+                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card h-auto">
+        <div class="card-body p-0">
+          <div class="table-responsive active-projects style-1">
+            <table class="table clinic-table mb-0">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 80px">STT</th>
+                  <th class="sortable" style="width: 150px" (click)="sort('code')">
+                    Mã tỉnh thành(Số)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('code')"></i>
+                  </th>
+                  <th class="sortable" style="width: 160px" (click)="sort('codeName')">
+                    Mã tỉnh thành(Tên)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('codeName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 160px" (click)="sort('nameVN')">
+                    Tên tỉnh thành(VN)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('nameVN')"></i>
+                  </th>
+                  <th class="sortable" style="width: 160px" (click)="sort('nameEN')">
+                    Tên tỉnh thành(EN)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('nameEN')"></i>
+                  </th>
+                  <th class="sortable" style="width: 220px" (click)="sort('fullNameVN')">
+                    Tên tỉnh thành đầy đủ(VN)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('fullNameVN')"></i>
+                  </th>
+                  <th class="sortable" style="width: 220px" (click)="sort('fullNameEN')">
+                    Tên tỉnh thành đầy đủ(EN)
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('fullNameEN')"></i>
+                  </th>
+                  <th class="sortable" style="width: 120px" (click)="sort('administrativeUnitName')">
+                    Đơn vị
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('administrativeUnitName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 120px" (click)="sort('administrativeRegionName')">
+                    Vùng
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('administrativeRegionName')"></i>
+                  </th>
+                  <th class="text-end" style="width: 100px">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (data of listData; track data.id) {
+                  <tr>
+                    <td class="text-center">{{ data.stt }}</td>
+                    <td>{{ data.code }}</td>
+                    <td>{{ data.codeName }}</td>
+                    <td>{{ data.nameVN }}</td>
+                    <td>{{ data.nameEN }}</td>
+                    <td>{{ data.fullNameVN }}</td>
+                    <td>{{ data.fullNameEN }}</td>
+                    <td>{{ data.administrativeUnitName }}</td>
+                    <td>{{ data.administrativeRegionName }}</td>
+                    <td class="text-end">
+                      @if (permission.allowEdit) {
+                        <button
+                          type="button"
+                          class="btn btn-primary light btn-xs sharp me-1"
+                          title="Sửa dữ liệu"
+                          (click)="openModal(data)"
+                        >
+                          <i class="fa-solid fa-pen"></i>
+                        </button>
+                      }
+                      @if (permission.allowDelete && !data.isDefault) {
+                        <button
+                          type="button"
+                          class="btn btn-danger light btn-xs sharp"
+                          title="Xóa dữ liệu"
+                          (click)="delete(data.id)"
+                        >
+                          <i class="fa-solid fa-trash"></i>
+                        </button>
+                      }
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="10" class="text-center text-muted py-4">Không có dữ liệu</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-table-pager
+            [page]="table.page"
+            [pageSize]="table.pageSize"
+            [total]="table.total"
+            (pageChange)="changePage($event)"
+            (pageSizeChange)="changePageSize($event)"
+          ></app-table-pager>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-not-found isFullPage="false"></app-not-found>
+}
+<app-loading *ngIf="isLoading"></app-loading>

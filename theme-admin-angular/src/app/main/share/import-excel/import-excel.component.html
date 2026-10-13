@@ -1,0 +1,57 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <p>
+          <b>Lựa chọn tập tin excel</b>
+        </p>
+        <p>
+          <b>
+            Điều chỉnh tập tin cần import có cấu trúc các trường dữ liệu giống như
+            tập tin excel mẫu
+          </b>
+        </p>
+        <p>
+          <i>
+            Lưu ý: Hệ thống sẽ lọc và không lưu những dữ liệu đã trùng nhau. Việc
+            import dữ liệu sẽ bị tốn 1 khoảng thời gian. Vui lòng không tắt trình
+            duyệt.
+          </i>
+        </p>
+        <div class="mb-3">
+          <input
+            id="file"
+            name="file"
+            type="file"
+            class="form-control"
+            #myFile
+            accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+            (change)="onFilesChange($event)"
+          />
+        </div>
+        <p class="mb-0">
+          <b>
+            Ấn vào
+            <span class="download-template" (click)="downloadTemplate()">
+              đây
+            </span>
+            để tải và xem tập tin mẫu
+          </b>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

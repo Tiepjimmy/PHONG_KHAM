@@ -1,0 +1,98 @@
+@if (permission?.allowAccess) {
+  <div class="row">
+    <div class="col-xl-12">
+      <!-- Filter -->
+      <div class="card h-auto mb-3">
+        <div class="card-body py-3">
+          <form [formGroup]="searchForm" (ngSubmit)="search()">
+            <div class="row g-3 align-items-end">
+              <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12 col-12">
+                <label class="form-label" for="searchText">Tên đăng nhập</label>
+                <input
+                  id="searchText"
+                  class="form-control"
+                  placeholder="Nhập dữ liệu"
+                  formControlName="searchText"
+                />
+              </div>
+              <div class="col-xl-8 col-lg-12 col-md-12 col-sm-12 col-12 text-md-end">
+                <button type="submit" class="btn btn-primary btn-sm me-2" title="Tìm kiếm dữ liệu">
+                  <i class="fa-solid fa-magnifying-glass me-1"></i>Tìm kiếm
+                </button>
+                <button type="button" class="btn btn-info btn-sm" title="Tải lại trang" (click)="reloadPage()">
+                  <i class="fa-solid fa-rotate me-1"></i>Làm mới
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="card h-auto">
+        <div class="card-body p-0">
+          <div class="table-responsive active-projects style-1">
+            <table class="table clinic-table mb-0">
+              <thead>
+                <tr>
+                  <th class="text-center" style="width: 80px">STT</th>
+                  <th class="sortable" style="width: 120px" (click)="sort('pcName')">
+                    Tên máy tính
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('pcName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 80px" (click)="sort('userName')">
+                    Tên đăng nhập
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('userName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 120px" (click)="sort('fullName')">
+                    Tên đầy đủ
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('fullName')"></i>
+                  </th>
+                  <th class="sortable" style="width: 80px" (click)="sort('phoneNumber')">
+                    Điện thoại
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('phoneNumber')"></i>
+                  </th>
+                  <th class="sortable" style="width: 80px" (click)="sort('iPv4')">
+                    Ip
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('iPv4')"></i>
+                  </th>
+                  <th class="sortable" style="width: 100px" (click)="sort('createdDate')">
+                    Ngày đăng nhập
+                    <i class="fa-solid ms-1" [ngClass]="table.sortIcon('createdDate')"></i>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (data of listData; track $index) {
+                  <tr>
+                    <td class="text-center">{{ data.stt }}</td>
+                    <td>{{ data.pcName }}</td>
+                    <td>{{ data.userName }}</td>
+                    <td>{{ data.fullName }}</td>
+                    <td>{{ data.phoneNumber }}</td>
+                    <td>{{ data.iPv4 }}</td>
+                    <td>{{ data.createdDate | date : dateFormat }}</td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="7" class="text-center text-muted py-4">Không có dữ liệu</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <app-table-pager
+            [page]="table.page"
+            [pageSize]="table.pageSize"
+            [total]="table.total"
+            (pageChange)="changePage($event)"
+            (pageSizeChange)="changePageSize($event)"
+          ></app-table-pager>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else {
+  <app-not-found isFullPage="false"></app-not-found>
+}
+<app-loading *ngIf="isLoading"></app-loading>

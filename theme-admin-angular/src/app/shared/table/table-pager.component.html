@@ -1,0 +1,49 @@
+<div class="d-flex flex-wrap align-items-center justify-content-between gap-2 px-3 py-3 clinic-table-pager">
+  <div class="d-flex align-items-center gap-2">
+    <span class="text-muted">Hiển thị {{ from }}-{{ to }} của {{ total }} bản ghi</span>
+    <select
+      class="form-select form-select-sm w-auto"
+      [ngModel]="pageSize"
+      (ngModelChange)="changeSize($event)"
+    >
+      @for (size of pageSizeOptions; track size) {
+        <option [ngValue]="size">{{ size }} / trang</option>
+      }
+    </select>
+  </div>
+  <nav aria-label="Phân trang">
+    <ul class="pagination pagination-sm mb-0">
+      <li class="page-item" [class.disabled]="page <= 1">
+        <a class="page-link" href="javascript:void(0)" (click)="goTo(page - 1)">
+          <i class="fa-solid fa-angle-left"></i>
+        </a>
+      </li>
+      @if (pages[0] > 1) {
+        <li class="page-item">
+          <a class="page-link" href="javascript:void(0)" (click)="goTo(1)">1</a>
+        </li>
+        @if (pages[0] > 2) {
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        }
+      }
+      @for (p of pages; track p) {
+        <li class="page-item" [class.active]="p === page">
+          <a class="page-link" href="javascript:void(0)" (click)="goTo(p)">{{ p }}</a>
+        </li>
+      }
+      @if (pages[pages.length - 1] < totalPage) {
+        @if (pages[pages.length - 1] < totalPage - 1) {
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        }
+        <li class="page-item">
+          <a class="page-link" href="javascript:void(0)" (click)="goTo(totalPage)">{{ totalPage }}</a>
+        </li>
+      }
+      <li class="page-item" [class.disabled]="page >= totalPage">
+        <a class="page-link" href="javascript:void(0)" (click)="goTo(page + 1)">
+          <i class="fa-solid fa-angle-right"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+</div>

@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-xl-12">
+    <div class="card h-auto">
+      <div class="card-header border-0 pb-0">
+        <h4 class="heading mb-0">Thông tin đăng nhập</h4>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-xl-3 col-sm-6">
+            <div class="d-flex align-items-center clinic-info-item">
+              <span class="clinic-info-icon"><i class="fa-solid fa-user"></i></span>
+              <div class="ms-3">
+                <span class="d-block text-muted fs-13">Tên đăng nhập</span>
+                <h6 class="mb-0">{{ userName }}</h6>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6">
+            <div class="d-flex align-items-center clinic-info-item">
+              <span class="clinic-info-icon"><i class="fa-solid fa-id-card"></i></span>
+              <div class="ms-3">
+                <span class="d-block text-muted fs-13">Tên đầy đủ</span>
+                <h6 class="mb-0">{{ fullName }}</h6>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6">
+            <div class="d-flex align-items-center clinic-info-item">
+              <span class="clinic-info-icon"><i class="fa-solid fa-user-shield"></i></span>
+              <div class="ms-3">
+                <span class="d-block text-muted fs-13">Vai trò</span>
+                <h6 class="mb-0">{{ userGroupName }}</h6>
+              </div>
+            </div>
+          </div>
+          <div class="col-xl-3 col-sm-6">
+            <div class="d-flex align-items-center clinic-info-item">
+              <span class="clinic-info-icon"><i class="fa-solid fa-calendar-day"></i></span>
+              <div class="ms-3">
+                <span class="d-block text-muted fs-13">Ngày đăng nhập</span>
+                <h6 class="mb-0">{{ dateLogin }}</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<app-loading *ngIf="isLoading"></app-loading>

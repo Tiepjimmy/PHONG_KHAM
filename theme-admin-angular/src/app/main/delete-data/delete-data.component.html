@@ -1,0 +1,37 @@
+<div [ngClass]="'row'" *ngIf="permission.allowAccess">
+  <div [ngClass]="'col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12'">
+    <div [ngClass]="'card'">
+      <div [ngClass]="'table-responsive p-3'">
+        <p>
+          <b>
+            <i>
+              Lưu ý: Chức năng này phục vụ việc xóa toàn bộ dữ liệu cũ của hệ
+              thống. Sau khi bạn thực hiện chức năng này đồng nghĩa với việc dữ
+              liệu sẽ không thể khôi phục lại!
+            </i>
+          </b>
+        </p>
+        <p>
+          <b>
+            Ấn vào
+            <span [ngClass]="'download-template'" (click)="deleteData()">
+              đây
+            </span>
+            để xóa dữ liệu cũ.
+          </b>
+        </p>
+        <p>
+          <b>
+            Ấn vào
+            <span [ngClass]="'download-template'" (click)="deleteDataHistory()">
+              đây
+            </span>
+            để xóa dữ liệu lịch sử đăng nhập và lịch sử thay đổi dữ liệu.
+          </b>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<app-not-found *ngIf="!permission.allowAccess"></app-not-found>
+<app-loading *ngIf="isLoading"></app-loading>

@@ -1,0 +1,44 @@
+<div class="deznav" (mouseover)="hoverAdd(true)" (mouseout)="hoverAdd(false)">
+  <div class="deznav-scroll">
+    <ul class="metismenu" id="menu">
+      <li class="menu-title first">Danh mục chức năng</li>
+      @for (item of listMenu; track $index) {
+        @if (item.children.length === 0) {
+          <li [ngClass]="{ 'mm-active': isCurrent(item) }">
+            <a [routerLink]="[link(item)]" aria-expanded="false">
+              <div class="menu-icon"><i [ngClass]="item.iconName"></i></div>
+              <span class="nav-text ms-2">{{ item.objectMenuName }}</span>
+            </a>
+          </li>
+        } @else {
+          <li [ngClass]="{ 'mm-active': isParentActive(item) }">
+            <a
+              class="has-arrow ai-icon"
+              href="javascript:void(0)"
+              [attr.aria-expanded]="openMenu === item"
+              (click)="toggleMenu(item)"
+            >
+              <div class="menu-icon"><i [ngClass]="item.iconName"></i></div>
+              <span class="nav-text ms-2 me-1">{{ item.objectMenuName }}</span>
+            </a>
+            <ul
+              aria-expanded="false"
+              class="mm-collapse"
+              [class.mm-show]="openMenu === item"
+            >
+              @for (child of item.children; track $index) {
+                <li [ngClass]="{ 'mm-active': isCurrent(child) }">
+                  <a
+                    [routerLink]="[link(child)]"
+                    [ngClass]="{ 'mm-active': isCurrent(child) }"
+                    >{{ child.objectMenuName }}</a
+                  >
+                </li>
+              }
+            </ul>
+          </li>
+        }
+      }
+    </ul>
+  </div>
+</div>

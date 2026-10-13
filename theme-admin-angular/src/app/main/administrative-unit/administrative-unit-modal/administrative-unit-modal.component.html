@@ -1,0 +1,89 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="codeNameVN">
+          Mã đơn vị(VN) <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="codeNameVN"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('codeNameVN')"
+          formControlName="codeNameVN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="codeNameEN">Mã đơn vị(EN)</label>
+        <input
+          id="codeNameEN"
+          type="text"
+          class="form-control"
+          formControlName="codeNameEN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fullNameVN">Tên đơn vị(VN)</label>
+        <input
+          id="fullNameVN"
+          type="text"
+          class="form-control"
+          formControlName="fullNameVN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fullNameEN">Tên đơn vị(EN)</label>
+        <input
+          id="fullNameEN"
+          type="text"
+          class="form-control"
+          formControlName="fullNameEN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="shortNameVN">Tên gọi khác(VN)</label>
+        <input
+          id="shortNameVN"
+          type="text"
+          class="form-control"
+          formControlName="shortNameVN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="shortNameEN">Tên gọi khác(EN)</label>
+        <input
+          id="shortNameEN"
+          type="text"
+          class="form-control"
+          formControlName="shortNameEN"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

@@ -1,0 +1,109 @@
+<div
+  id="main-wrapper"
+  class="show"
+  [ngClass]="{ 'menu-toggle': toggleVal }"
+  [class.iconhover-toggle]="mouseOvered"
+>
+  <!-- Nav header -->
+  <div class="nav-header">
+    <a [routerLink]="[homeRouter]" class="brand-logo">
+      <img class="logo-abbr clinic-logo" [src]="logoName" alt="" />
+      <span class="brand-title clinic-brand-title">{{ projectShortName }}</span>
+    </a>
+    <div class="nav-control" (click)="sidebarToggle()">
+      <div class="hamburger" [ngClass]="{ 'is-active': toggleVal }">
+        <span class="line"></span>
+        <span class="line"></span>
+        <span class="line"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-content">
+      <nav class="navbar navbar-expand">
+        <div class="collapse navbar-collapse justify-content-between">
+          <div class="header-left">
+            <div class="dashboard_bar clinic-project-name">{{ projectName }}</div>
+          </div>
+          <ul class="navbar-nav header-right">
+            <li class="nav-item ps-3">
+              <div class="dropdown header-profile2">
+                <a
+                  class="nav-link"
+                  href="javascript:void(0);"
+                  role="button"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <div class="header-info2 d-flex align-items-center">
+                    <div class="header-media">
+                      <img [src]="avatar || 'assets/img/boy.png'" alt="" />
+                    </div>
+                    <div class="header-info">
+                      <h6>{{ fullName }}</h6>
+                      <p>{{ userName }}</p>
+                    </div>
+                  </div>
+                </a>
+                <div class="dropdown-menu dropdown-menu-end">
+                  <div class="card border-0 mb-0">
+                    <div class="card-body px-0 py-2">
+                      <a
+                        href="javascript:void(0);"
+                        class="dropdown-item ai-icon"
+                        (click)="openModalInfo()"
+                      >
+                        <i class="fas fa-user text-primary"></i>
+                        <span class="ms-2">Thông tin cá nhân</span>
+                      </a>
+                      <a
+                        href="javascript:void(0);"
+                        class="dropdown-item ai-icon"
+                        (click)="openModalChangePassword()"
+                      >
+                        <i class="fas fa-key text-primary"></i>
+                        <span class="ms-2">Đổi mật khẩu</span>
+                      </a>
+                    </div>
+                    <div class="card-footer px-0 py-2">
+                      <a
+                        href="javascript:void(0);"
+                        class="dropdown-item ai-icon"
+                        (click)="logOut()"
+                      >
+                        <i class="fas fa-sign-out-alt text-danger"></i>
+                        <span class="ms-2 text-danger">Đăng xuất</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <app-sidebar (mouseHoverEvent)="iconHoverToggle($event)"></app-sidebar>
+
+  <!-- Content -->
+  <div class="content-body">
+    <app-header></app-header>
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="copyright">
+      <p>
+        <b>{{ projectName }}</b>
+      </p>
+    </div>
+  </div>
+</div>

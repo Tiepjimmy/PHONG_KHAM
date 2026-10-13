@@ -1,0 +1,80 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      @if (isShowImg) {
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3 text-center">
+          <label class="form-label d-block">Ảnh đại diện</label>
+          <img [src]="imageSrc" class="upload-img-custom img-thumbnail" alt="Ảnh đại diện" />
+        </div>
+      }
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="fullName">
+          Họ và tên <span class="text-danger">(*)</span>
+        </label>
+        <input
+          id="fullName"
+          type="text"
+          class="form-control"
+          [class.is-invalid]="isInvalid('fullName')"
+          formControlName="fullName"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+        <div class="invalid-feedback">Vui lòng nhập dữ liệu</div>
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="phoneNumber">Số điện thoại</label>
+        <input
+          id="phoneNumber"
+          type="text"
+          class="form-control"
+          formControlName="phoneNumber"
+          onkeypress="return isNumber(event)"
+          maxlength="10"
+          placeholder="Nhập dữ liệu"
+          autocomplete="off"
+        />
+      </div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="dateOfBirth">Ngày sinh</label>
+        <app-date-picker inputId="dateOfBirth" formControlName="dateOfBirth"></app-date-picker></div>
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-6 mb-3">
+        <label class="form-label" for="sex">Giới tính</label>
+        <app-select
+          id="sex"
+          formControlName="sex"
+          [items]="listSex"
+          bindValue="id"
+          bindLabel="name"
+          placeholder="Chọn dữ liệu"
+          [allowClear]="false"
+          [searchable]="false"
+        ></app-select>
+      </div>
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 mb-3">
+        <label class="form-label" for="address">Địa chỉ</label>
+        <textarea
+          id="address"
+          class="form-control"
+          formControlName="address"
+          placeholder="Nhập dữ liệu"
+          rows="2"
+          autocomplete="off"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

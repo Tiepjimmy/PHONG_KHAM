@@ -1,0 +1,116 @@
+<form [formGroup]="formGroup" (ngSubmit)="submitForm()" novalidate class="position-relative">
+  <div class="modal-header">
+    <h5 class="modal-title">{{ title }}</h5>
+    <button type="button" class="btn-close" aria-label="Đóng" (click)="destroyModal(false)"></button>
+  </div>
+  <div class="modal-body">
+    <div class="row">
+      <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+        <label class="form-label fw-semibold">Tên nhóm quyền: {{ data?.name }}</label>
+        <div class="table-responsive">
+          <table class="table table-bordered table-sm align-middle mb-0">
+            <thead>
+              <tr>
+                <th style="width: 200px">Chức năng</th>
+                <th class="text-center" style="width: 80px">Truy cập</th>
+                <th class="text-center" style="width: 80px">Thêm</th>
+                <th class="text-center" style="width: 80px">Sửa</th>
+                <th class="text-center" style="width: 80px">Xóa</th>
+                <th class="text-center" style="width: 80px">In</th>
+                <th class="text-center" style="width: 80px">Export</th>
+                <th class="text-center" style="width: 80px">Import</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (item of listData; track item.id) {
+                <tr>
+                  <td [class.ps-5]="item.levelShow === 2">
+                    {{ item.objectMenuName }}
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowAccess_{{ item.id }}"
+                      [formControlName]="'id_allowAccess_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowAccess')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowAdd_{{ item.id }}"
+                      [formControlName]="'id_allowAdd_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowAdd')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowEdit_{{ item.id }}"
+                      [formControlName]="'id_allowEdit_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowEdit')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowDelete_{{ item.id }}"
+                      [formControlName]="'id_allowDelete_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowDelete')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowPrint_{{ item.id }}"
+                      [formControlName]="'id_allowPrint_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowPrint')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowExport_{{ item.id }}"
+                      [formControlName]="'id_allowExport_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowExport')"
+                    />
+                  </td>
+                  <td class="text-center">
+                    <input
+                      class="form-check-input"
+                      type="checkbox"
+                      id="id_allowImport_{{ item.id }}"
+                      [formControlName]="'id_allowImport_' + item.id"
+                      (change)="onChangeAllow(item.id, 'allowImport')"
+                    />
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="8">
+                    <div class="text-center text-muted py-4">Không có dữ liệu</div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger light btn-sm" (click)="destroyModal(false)">
+      <i class="fa-solid fa-xmark me-1"></i>Thoát
+    </button>
+    <button type="submit" class="btn btn-primary btn-sm">
+      <i class="fa-solid fa-floppy-disk me-1"></i>Lưu
+    </button>
+  </div>
+  <app-loading-modal *ngIf="isLoading"></app-loading-modal>
+</form>

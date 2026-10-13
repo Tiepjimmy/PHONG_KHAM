@@ -1,0 +1,95 @@
+.p-t-20 {
+  padding-top: 20px;
+}
+
+.p-b-20 {
+  padding-bottom: 20px;
+}
+
+.p-b-80 {
+  padding-bottom: 80px !important;
+}
+
+.m-t--10 {
+  margin-top: -10px;
+}
+
+.t-c {
+  text-align: center;
+}
+
+.t-r {
+  text-align: right;
+}
+
+.col-xl-4,
+.col-lg-4,
+.col-md-4 {
+  width: 33.33333%;
+}
+
+.col-xl-7,
+.col-lg-7,
+.col-md-7 {
+  width: 58.33333%;
+}
+
+.col-xl-5,
+.col-lg-5,
+.col-md-5 {
+  width: 41.66667%;
+}
+
+.row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  margin-right: -0.75rem;
+  margin-left: -0.75rem;
+}
+
+.document-print {
+  border: double windowtext 4.5pt;
+  border-collapse: collapse;
+  display: table;
+  font-family: "Times New Roman", serif;
+}
+
+.document-print .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.document-print .row-content {
+  padding: 0 30px 2px 30px;
+}
+
+.document-print .document-print-title-first,
+.document-print .document-print-title1,
+.document-print .document-print-title6,
+.document-print .document-print-title7 {
+  font-size: 14pt;
+  line-height: 115%;
+  font-weight: bold;
+}
+
+.document-print .document-print-title2 {
+  font-size: 12pt;
+  line-height: 115%;
+  font-style: italic;
+  padding-right: 15px;
+}
+
+.document-print .document-print-title3 {
+  font-size: 14pt;
+  line-height: 115%;
+}
+
+.document-print .document-print-title4,
+.document-print .document-print-title5 {
+  font-size: 14pt;
+  line-height: 115%;
+  font-style: italic;
+}
