@@ -218,3 +218,21 @@
 ngb-datepicker.dropdown-menu {
   z-index: 1065;
 }
+
+/* ===== Modals =====
+   ng-bootstrap renders <div.modal-content><app-xxx-modal><form>header/body/footer</form>. Make the component
+   host and the form part of Bootstrap's .modal-dialog-scrollable flex column so the body scrolls and the
+   footer (Lưu / Thoát) stays visible. */
+.modal-dialog-scrollable .modal-content > :has(> form),
+.modal-dialog-scrollable .modal-content > * > form {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.modal-dialog-scrollable .modal-content > * > form > .modal-body {
+  overflow-y: auto;
+}
